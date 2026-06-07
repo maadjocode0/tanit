@@ -420,7 +420,89 @@ h1, h2, h3, h4, p { margin: 0; }
   font-size: 0.95rem;
   font-style: italic;
 }
+.floating-cart {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.85rem 1.25rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 8px 24px rgba(201, 168, 76, 0.4);
+  z-index: 200;
+  transition: transform 0.2s, filter 0.2s;
+}
 
+.floating-cart:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+#cartBadge {
+  background: #fff;
+  color: var(--accent);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.item-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.btn-add {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform 0.15s, filter 0.15s;
+  flex-shrink: 0;
+}
+
+.btn-add:hover {
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
+
+.toast {
+  position: fixed;
+  bottom: 5.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(26, 58, 42, 0.95);
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  z-index: 300;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
 @media (min-width: 768px) {
   .hero { padding: 2.5rem 1.5rem; }
   .section { padding: 1.5rem; }

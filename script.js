@@ -166,6 +166,57 @@ const CATEGORY_PLACEHOLDERS = {
   "Formule Tanit": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80"
 };
 
+// =============================================
+// CART
+// =============================================
+
+function getCart() {
+  return JSON.parse(localStorage.getItem("tanit_cart") || "[]");
+}
+
+function setCart(cart) {
+  localStorage.setItem("tanit_cart", JSON.stringify(cart));
+}
+
+function updateCartBadge() {
+  const cart = getCart();
+  const total = cart.reduce((sum, i) => sum + i.qty, 0);
+  const badge = document.getElementById("cartBadge");
+  const floatingCart = document.getElementById("floatingCart");
+  if (badge) badge.textContent = total;
+  if (floatingCart) floatingCart.style.display = total > 0 ? "flex" : "none";
+}
+
+function addToCart(name, price) {
+  const cart = getCart();
+  const existing = cart.find(i => i.name === name);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ name, price, qty: 1 });
+  }
+  setCart(cart);
+  updateCartBadge();
+  showToast(`${name} ajouté au panier`);
+}
+
+function showToast(message) {
+  let toast = document.getElementById("toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "toast";
+    toast.className = "toast";
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 1800);
+}
+
+// =============================================
+// MENU
+// =============================================
+
 function slugify(text) {
   return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-");
 }
@@ -215,12 +266,15 @@ function renderMenu() {
                   <h4>${item.name}</h4>
                   ${item.desc ? `<div class="menu-item-desc">${item.desc}</div>` : ""}
                 </div>
-                ${item.priceDouble ? `
-                  <div class="item-price-double">
-                    <span><span class="price-label">Simple </span>${formatPrice(item.price)}</span>
-                    <span><span class="price-label">Double </span>${formatPrice(item.priceDouble)}</span>
-                  </div>
-                ` : `<span class="item-price">${formatPrice(item.price)}</span>`}
+                <div class="item-right">
+                  ${item.priceDouble ? `
+                    <div class="item-price-double">
+                      <span><span class="price-label">Simple </span>${formatPrice(item.price)}</span>
+                      <span><span class="price-label">Double </span>${formatPrice(item.priceDouble)}</span>
+                    </div>
+                  ` : `<span class="item-price">${formatPrice(item.price)}</span>`}
+                  <button class="btn-add" onclick="event.stopPropagation(); addToCart('${item.name.replace(/'/g, "\\'")}', ${item.price})">+</button>
+                </div>
               </div>
             `).join("")}
           </div>
@@ -229,6 +283,7 @@ function renderMenu() {
     `;
   }).join("");
 
+  // Toggle category collapse
   menuContainer.querySelectorAll(".category-toggle").forEach((btn) => {
     btn.addEventListener("click", () => {
       const targetId = btn.dataset.target;
@@ -241,15 +296,19 @@ function renderMenu() {
     });
   });
 
+  // Expand item on tap
   menuContainer.querySelectorAll(".menu-item").forEach((item) => {
     item.addEventListener("click", () => {
       const isExpanded = item.classList.contains("expanded");
-      const siblings = item.closest(".menu-list").querySelectorAll(".menu-item");
-      siblings.forEach((s) => s.classList.remove("expanded"));
+      item.closest(".menu-list").querySelectorAll(".menu-item").forEach(s => s.classList.remove("expanded"));
       if (!isExpanded) item.classList.add("expanded");
     });
   });
 }
+
+// =============================================
+// SCROLL SPY
+// =============================================
 
 function setupScrollSpy() {
   const pills = document.querySelectorAll(".nav-pill");
@@ -268,12 +327,11 @@ function setupScrollSpy() {
 
   categories.forEach((cat) => observer.observe(cat));
 }
-function init() {
-  renderNavbar();
-  renderMenu();
-  setupScrollSpy();
-  setupSearch();
-}
+
+// =============================================
+// SEARCH
+// =============================================
+
 function setupSearch() {
   const input = document.getElementById("searchInput");
   if (!input) return;
@@ -323,6 +381,14 @@ function setupSearch() {
     }
     noResults.style.display = anyVisible ? "none" : "block";
   });
+}
+
+function init() {
+  renderNavbar();
+  renderMenu();
+  setupScrollSpy();
+  setupSearch();
+  updateCartBadge();
 }
 
 document.addEventListener("DOMContentLoaded", init);

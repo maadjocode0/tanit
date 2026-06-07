@@ -1,0 +1,157 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body.pos-body {
+  font-family: "Inter", sans-serif;
+  background: #0d1117;
+  color: #f0f0f0;
+  min-height: 100vh;
+}
+
+.pos-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.pos-topbar {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pos-brand strong {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.3rem;
+  color: #c9a84c;
+  display: block;
+}
+
+.pos-brand span {
+  font-size: 0.8rem;
+  color: #8b949e;
+}
+
+.pos-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.order-count {
+  background: #c9a84c;
+  color: #1a3a2a;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+}
+
+.pos-time {
+  font-size: 0.95rem;
+  color: #c9a84c;
+  font-variant-numeric: tabular-nums;
+}
+
+.pos-orders {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  align-content: start;
+}
+
+.empty-pos {
+  color: #8b949e;
+  font-size: 0.95rem;
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 3rem;
+}
+
+.order-card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 16px;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: slideIn 0.3s ease;
+}
+
+.order-card.new {
+  border-color: #c9a84c;
+  box-shadow: 0 0 0 1px #c9a84c33;
+}
+
+.order-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-head h3 {
+  font-size: 1rem;
+  color: #f0f0f0;
+}
+
+.order-head strong {
+  color: #c9a84c;
+  font-size: 0.95rem;
+}
+
+.order-items {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.order-items li {
+  font-size: 0.85rem;
+  color: #c9d1d9;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid #21262d;
+}
+
+.order-items li:last-child { border-bottom: none; }
+
+.order-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.order-time {
+  font-size: 0.78rem;
+  color: #8b949e;
+}
+
+.btn-done {
+  background: #1a3a2a;
+  color: #c9a84c;
+  border: 1px solid #c9a84c44;
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-done:hover {
+  background: #c9a84c;
+  color: #1a3a2a;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
