@@ -9,13 +9,13 @@ let allOrders = [];
 // AUTH
 // =============================================
 
-function checkPassword() {
-  const pwd = prompt("Mot de passe staff :");
-  if (pwd !== ADMIN_PASSWORD) {
-    document.body.innerHTML = "<p style='color:white;text-align:center;padding:2rem'>Accès refusé.</p>";
-    return false;
+function checkAuth() {
+  const token = sessionStorage.getItem("tanit_token");
+  if (!token) {
+    window.location.href = "login.html";
+    return null;
   }
-  return true;
+  return token;
 }
 
 // =============================================
@@ -216,13 +216,19 @@ function playSound() {
     osc.stop(ctx.currentTime + 0.3);
   } catch (e) {}
 }
-
+function escape(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 // =============================================
 // INIT
 // =============================================
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (!checkPassword()) return;
+  if (!checkAuth()) return;
   startClock();
   fetchAndRender();
   setInterval(fetchAndRender, 5000);
