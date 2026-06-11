@@ -8,7 +8,7 @@ async function supabaseRequest(method, path, body = null) {
       "Content-Type": "application/json",
       "apikey": SUPABASE_KEY,
       "Authorization": `Bearer ${SUPABASE_KEY}`,
-      "Prefer": method === "POST" ? "return=representation" : ""
+      "Prefer": (method === "POST" || method === "PATCH") ? "return=representation" : ""
     }
   };
   if (body) options.body = JSON.stringify(body);

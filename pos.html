@@ -13,20 +13,60 @@
 <body class="pos-body">
 
   <div class="pos-shell">
+
+    <!-- TOPBAR -->
     <div class="pos-topbar">
       <div class="pos-brand">
         <strong>Tanit Lounge</strong>
         <span>Dashboard commandes</span>
       </div>
       <div class="pos-right">
-        <span id="orderCount" class="order-count">0 commande</span>
         <span id="currentTime" class="pos-time"></span>
       </div>
     </div>
 
+    <!-- STATS BAR -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <span class="stat-label">En attente</span>
+        <span class="stat-value" id="statPending">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Terminées aujourd'hui</span>
+        <span class="stat-value" id="statDone">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Annulées</span>
+        <span class="stat-value" id="statCancelled">0</span>
+      </div>
+      <div class="stat-card highlight">
+        <span class="stat-label">CA du jour</span>
+        <span class="stat-value" id="statRevenue">0.00 DT</span>
+      </div>
+    </div>
+
+    <!-- FILTER TABS -->
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-filter="pending" onclick="setFilter('pending')">
+        <i class="fa-solid fa-clock"></i> En attente
+        <span class="tab-badge" id="badgePending">0</span>
+      </button>
+      <button class="filter-tab" data-filter="done" onclick="setFilter('done')">
+        <i class="fa-solid fa-check"></i> Terminées
+      </button>
+      <button class="filter-tab" data-filter="cancelled" onclick="setFilter('cancelled')">
+        <i class="fa-solid fa-xmark"></i> Annulées
+      </button>
+      <button class="filter-tab" data-filter="all" onclick="setFilter('all')">
+        <i class="fa-solid fa-list"></i> Tout
+      </button>
+    </div>
+
+    <!-- ORDERS GRID -->
     <div id="posOrders" class="pos-orders">
       <p class="empty-pos">Aucune commande en attente.</p>
     </div>
+
   </div>
 
   <script src="supabase.js"></script>

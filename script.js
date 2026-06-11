@@ -187,6 +187,21 @@ function updateCartBadge() {
   if (floatingCart) floatingCart.style.display = total > 0 ? "flex" : "none";
 }
 
+function updateItemControl(name, qty) {
+  // Find the item-right div for this item by matching the data-item-name attribute
+  const control = document.querySelector(`.item-qty-control[data-name="${CSS.escape(name)}"]`);
+  if (!control) return;
+
+  if (qty === 0) {
+    // Revert to simple + button
+    control.outerHTML = `
+      <button class="btn-add" data-name="${name}" onclick="event.stopPropagation(); addToCart('${name.replace(/'/g, "\\'")}', ${control.dataset.price})">+</button>
+    `;
+  } else {
+    control.querySelector(".qty-num-inline").textContent = qty;
+  }
+}
+
 function addToCart(name, price) {
   const cart = getCart();
   const existing = cart.find(i => i.name === name);
@@ -197,7 +212,50 @@ function addToCart(name, price) {
   }
   setCart(cart);
   updateCartBadge();
+
+  // Replace the + button with − qty + controls
+  const btn = document.querySelector(`.btn-add[data-name="${CSS.escape(name)}"]`);
+  if (btn) {
+    const qty = cart.find(i => i.name === name).qty;
+    btn.outerHTML = `
+      <div class="item-qty-control" data-name="${name}" data-price="${price}">
+        <button class="qty-btn-inline" onclick="event.stopPropagation(); changeQtyInMenu('${name.replace(/'/g, "\\'")}', ${price}, -1)">−</button>
+        <span class="qty-num-inline">${qty}</span>
+        <button class="qty-btn-inline" onclick="event.stopPropagation(); changeQtyInMenu('${name.replace(/'/g, "\\'")}', ${price}, 1)">+</button>
+      </div>
+    `;
+  } else {
+    // Already a control, just update the number
+    updateItemControl(name, cart.find(i => i.name === name).qty);
+  }
+
   showToast(`${name} ajouté au panier`);
+}
+
+function changeQtyInMenu(name, price, delta) {
+  const cart = getCart();
+  const existing = cart.find(i => i.name === name);
+  if (!existing) return;
+
+  existing.qty += delta;
+
+  if (existing.qty <= 0) {
+    // Remove from cart
+    const idx = cart.indexOf(existing);
+    cart.splice(idx, 1);
+    setCart(cart);
+    updateCartBadge();
+
+    // Revert control to + button
+    const control = document.querySelector(`.item-qty-control[data-name="${CSS.escape(name)}"]`);
+    if (control) {
+      control.outerHTML = `<button class="btn-add" data-name="${name}" onclick="event.stopPropagation(); addToCart('${name.replace(/'/g, "\\'")}', ${price})">+</button>`;
+    }
+  } else {
+    setCart(cart);
+    updateCartBadge();
+    updateItemControl(name, existing.qty);
+  }
 }
 
 function showToast(message) {
@@ -273,7 +331,19 @@ function renderMenu() {
                       <span><span class="price-label">Double </span>${formatPrice(item.priceDouble)}</span>
                     </div>
                   ` : `<span class="item-price">${formatPrice(item.price)}</span>`}
-                  <button class="btn-add" onclick="event.stopPropagation(); addToCart('${item.name.replace(/'/g, "\\'")}', ${item.price})">+</button>
+                  ${(() => {
+                    const cart = getCart();
+                    const inCart = cart.find(i => i.name === item.name);
+                    if (inCart && inCart.qty > 0) {
+                      return `
+                        <div class="item-qty-control" data-name="${item.name}" data-price="${item.price}">
+                          <button class="qty-btn-inline" onclick="event.stopPropagation(); changeQtyInMenu('${item.name.replace(/'/g, "\\'")}', ${item.price}, -1)">−</button>
+                          <span class="qty-num-inline">${inCart.qty}</span>
+                          <button class="qty-btn-inline" onclick="event.stopPropagation(); changeQtyInMenu('${item.name.replace(/'/g, "\\'")}', ${item.price}, 1)">+</button>
+                        </div>`;
+                    }
+                    return `<button class="btn-add" data-name="${item.name}" onclick="event.stopPropagation(); addToCart('${item.name.replace(/'/g, "\\'")}', ${item.price})">+</button>`;
+                  })()}
                 </div>
               </div>
             `).join("")}
@@ -328,9 +398,6 @@ function setupScrollSpy() {
   categories.forEach((cat) => observer.observe(cat));
 }
 
-// =============================================
-// SEARCH
-// =============================================
 
 function setupSearch() {
   const input = document.getElementById("searchInput");

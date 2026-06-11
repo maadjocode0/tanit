@@ -482,6 +482,43 @@ h1, h2, h3, h4, p { margin: 0; }
   filter: brightness(1.1);
 }
 
+/* Inline qty controls on menu items */
+.item-qty-control {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.qty-btn-inline {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.qty-btn-inline:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.qty-num-inline {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--accent);
+  min-width: 18px;
+  text-align: center;
+}
+
 .toast {
   position: fixed;
   bottom: 5.5rem;

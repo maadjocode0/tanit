@@ -107,8 +107,10 @@ async function submitOrder() {
     setCart([]);
     localStorage.removeItem(TABLE_KEY);
 
-    document.getElementById("cartSummary").style.display = "none";
     document.getElementById("cartItems").innerHTML = "";
+    document.querySelector(".summary-card").style.display = "none";
+    document.querySelector(".table-section").style.display = "none";
+    document.getElementById("orderBtn").style.display = "none";
     document.getElementById("orderSuccess").style.display = "block";
   } catch (err) {
     orderBtn.disabled = false;
