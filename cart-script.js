@@ -115,18 +115,29 @@ async function submitOrder() {
   if (error) { alert(error); return; }
 
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const note = (document.getElementById("orderNote")?.value || "").trim();
   const orderBtn = document.getElementById("orderBtn");
   orderBtn.disabled = true;
   orderBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Envoi...';
 
   try {
-    await createOrder(table, cart, total);
+    const order = await createOrder(table, cart, total, note);
     setCart([]);
     localStorage.removeItem(TABLE_KEY);
+    localStorage.setItem("tanit_last_order", Date.now());
+
+    const trackLink = document.getElementById("trackLink");
+    if (order && order.id) {
+      localStorage.setItem("tanit_last_order_id", order.id);
+      trackLink.href = `track.html?id=${order.id}`;
+    } else {
+      trackLink.style.display = "none";
+    }
 
     document.getElementById("cartItems").innerHTML = "";
     document.querySelector(".summary-card").style.display = "none";
     document.querySelector(".table-section").style.display = "none";
+    document.querySelector(".note-section").style.display = "none";
     document.getElementById("orderBtn").style.display = "none";
     document.getElementById("orderSuccess").style.display = "block";
   } catch (err) {
@@ -135,7 +146,6 @@ async function submitOrder() {
     alert("Erreur lors de l'envoi. Réessayez.");
     console.error(err);
   }
-  localStorage.setItem("tanit_last_order", Date.now());
 }
 
 // Check for table number in URL (from QR code)

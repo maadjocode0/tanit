@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1a3a2a" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon.svg" />
   <title>Tanit Lounge | Panier</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -46,6 +49,12 @@
             </div>
           </div>
 
+          <div class="note-section">
+            <h3>Note pour la cuisine <span>(optionnel)</span></h3>
+            <textarea id="orderNote" maxlength="200" rows="2"
+              placeholder="Ex : sans oignon, bien cuit, allergie aux fruits secs…"></textarea>
+          </div>
+
           <button class="btn-order" id="orderBtn" onclick="submitOrder()" disabled>
             <i class="fa-solid fa-check"></i>
             Confirmer la commande
@@ -55,6 +64,7 @@
             <i class="fa-solid fa-circle-check"></i>
             <h2>Commande envoyée !</h2>
             <p>Votre commande a été transmise au personnel.</p>
+            <a id="trackLink" href="#" class="btn-track"><i class="fa-solid fa-location-arrow"></i> Suivre ma commande</a>
             <a href="index.html" class="btn-back-menu">Retour au menu</a>
           </div>
         </div>

@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d1117" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon.svg" />
   <title>Tanit | POS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,7 +24,10 @@
         <span>Dashboard commandes</span>
       </div>
       <div class="pos-right">
+        <a class="pos-link" href="report.html"><i class="fa-solid fa-chart-line"></i> Rapport</a>
+        <a class="pos-link" href="admin.html"><i class="fa-solid fa-sliders"></i> Menu</a>
         <span id="currentTime" class="pos-time"></span>
+        <button class="pos-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
       </div>
     </div>
 
@@ -30,6 +36,10 @@
       <div class="stat-card">
         <span class="stat-label">En attente</span>
         <span class="stat-value" id="statPending">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">En préparation</span>
+        <span class="stat-value" id="statPreparing">0</span>
       </div>
       <div class="stat-card">
         <span class="stat-label">Terminées aujourd'hui</span>
@@ -50,6 +60,10 @@
       <button class="filter-tab active" data-filter="pending" onclick="setFilter('pending')">
         <i class="fa-solid fa-clock"></i> En attente
         <span class="tab-badge" id="badgePending">0</span>
+      </button>
+      <button class="filter-tab" data-filter="preparing" onclick="setFilter('preparing')">
+        <i class="fa-solid fa-fire-burner"></i> En préparation
+        <span class="tab-badge" id="badgePreparing">0</span>
       </button>
       <button class="filter-tab" data-filter="done" onclick="setFilter('done')">
         <i class="fa-solid fa-check"></i> Terminées

@@ -220,7 +220,7 @@
   box-shadow: var(--shadow-card);
 }
 
-.order-success i {
+.order-success > i {
   font-size: 3rem;
   color: var(--accent);
   margin-bottom: 1rem;
@@ -252,6 +252,62 @@
 }
 
 .btn-back-menu:hover { filter: brightness(1.1); }
+
+/* Note for the kitchen */
+.note-section {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 1rem;
+}
+
+.note-section h3 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.2rem;
+  color: var(--green);
+  margin-bottom: 0.6rem;
+}
+
+.note-section h3 span {
+  font-family: "Inter", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.note-section textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  font-family: "Inter", sans-serif;
+  outline: none;
+  color: var(--text);
+  background: var(--bg);
+  resize: vertical;
+}
+
+.note-section textarea:focus { border-color: var(--accent); }
+
+/* Track-order button on the success screen */
+.btn-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--accent);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-right: 0.5rem;
+  transition: filter 0.2s;
+}
+
+.btn-track:hover { filter: brightness(1.08); }
 
 .cart-empty {
   text-align: center;

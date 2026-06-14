@@ -1,0 +1,14 @@
+{
+  "name": "Tanit Lounge",
+  "short_name": "Tanit",
+  "description": "Menu & commandes — Tanit Lounge, Megrine",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a3a2a",
+  "theme_color": "#1a3a2a",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

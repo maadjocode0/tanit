@@ -545,3 +545,47 @@ h1, h2, h3, h4, p { margin: 0; }
   .section { padding: 1.5rem; }
   .category-toggle { min-height: 150px; }
 }
+
+/* ── Variants (Simple / Double …) ── */
+.item-right-variants {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+}
+
+.variant-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  justify-content: flex-end;
+}
+
+.variant-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  min-width: 3.2rem;
+  text-align: right;
+}
+
+/* ── Sold out (Épuisé) ── */
+.sold-out-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #b42318;
+  background: #fdeceb;
+  border: 1px solid #f3c2bd;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  white-space: nowrap;
+}
+
+.variant-row.sold-out .item-price,
+.variant-row.sold-out .variant-label {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
