@@ -1,10 +1,10 @@
 // Tanit Lounge — service worker (offline app shell, stale-while-revalidate)
-const CACHE = "tanit-v1";
+const CACHE = "tanit-v2";
 const ASSETS = [
   "index.html", "cart.html", "track.html",
   "menu-data.js", "script.js", "supabase.js", "cart-script.js", "track-script.js",
   "styles.css", "cart.css", "track.css",
-  "manifest.json", "icon.svg"
+  "manifest.json", "icon.svg", "favicon.svg"
 ];
 
 self.addEventListener("install", (e) => {
