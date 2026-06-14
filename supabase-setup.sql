@@ -45,21 +45,30 @@ create table if not exists public.menu_items (
 --    lines at the bottom of this file.
 -- =====================================================================
 
+-- First wipe ANY pre-existing policies on these tables. (A leftover
+-- "allow all" policy from the table's initial setup would otherwise keep
+-- granting anon writes, because RLS policies are combined with OR.)
+do $$
+declare pol record;
+begin
+  for pol in select policyname, tablename from pg_policies
+             where schemaname = 'public' and tablename in ('orders','menu_items') loop
+    execute format('drop policy if exists %I on public.%I', pol.policyname, pol.tablename);
+  end loop;
+end $$;
+
 -- ORDERS ------------------------------------------------------------
 alter table public.orders enable row level security;
 
 -- Customers (anon) may place an order and read order(s) — needed for the
 -- order-tracking page. They may NOT modify or delete.
-drop policy if exists "orders_anon_insert" on public.orders;
 create policy "orders_anon_insert" on public.orders
   for insert to anon with check (true);
 
-drop policy if exists "orders_anon_select" on public.orders;
 create policy "orders_anon_select" on public.orders
   for select to anon using (true);
 
 -- Staff (logged-in) may do everything.
-drop policy if exists "orders_auth_all" on public.orders;
 create policy "orders_auth_all" on public.orders
   for all to authenticated using (true) with check (true);
 
@@ -67,12 +76,10 @@ create policy "orders_auth_all" on public.orders
 alter table public.menu_items enable row level security;
 
 -- Anyone can read availability / price overrides (the public menu needs it).
-drop policy if exists "menu_anon_select" on public.menu_items;
 create policy "menu_anon_select" on public.menu_items
   for select to anon using (true);
 
 -- Only staff can change availability / prices.
-drop policy if exists "menu_auth_all" on public.menu_items;
 create policy "menu_auth_all" on public.menu_items
   for all to authenticated using (true) with check (true);
 
