@@ -291,6 +291,13 @@
 
 .note-section textarea:focus { border-color: var(--accent); }
 
+.success-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
 
 .btn-track {
   display: inline-flex;
@@ -303,7 +310,6 @@
   text-decoration: none;
   font-weight: 700;
   font-size: 0.9rem;
-  margin-right: 0.5rem;
   transition: filter 0.2s;
 }
 

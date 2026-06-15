@@ -305,7 +305,15 @@ body.pos-body {
 
 
 @media (max-width: 600px) {
+  .pos-shell { padding: 0.75rem; gap: 0.6rem; }
+  .pos-topbar { flex-wrap: wrap; gap: 0.6rem; padding: 0.85rem 1rem; }
+  .pos-brand strong { font-size: 1.15rem; }
+  .pos-right { flex-wrap: wrap; gap: 0.4rem; }
+  .pos-link { padding: 0.35rem 0.65rem; font-size: 0.72rem; }
+  .pos-time { font-size: 0.85rem; }
   .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .pos-orders { grid-template-columns: 1fr; }
+  .filter-tab { padding: 0.45rem 0.8rem; font-size: 0.78rem; }
 }
 
 

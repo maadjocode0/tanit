@@ -72,3 +72,8 @@
 .fb-avg { font-size: 2rem; font-weight: 700; color: #c9a84c; line-height: 1; }
 .fb-out { font-size: 0.9rem; color: #6e7681; }
 .fb-count { margin-left: auto; font-size: 0.78rem; color: #8b949e; align-self: center; }
+
+@media (max-width: 600px) {
+  .report-grid { grid-template-columns: 1fr; }
+  .range-tabs .filter-tab { padding: 0.45rem 0.8rem; font-size: 0.78rem; }
+}
