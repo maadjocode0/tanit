@@ -132,6 +132,13 @@ function getActions(order) {
   return '';
 }
 
+function tableBadge(order) {
+  if (order.table_verified === true) {
+    return '<span class="tbl-badge ok" title="Table confirmée par scan du QR"><i class="fa-solid fa-qrcode"></i> vérifiée</span>';
+  }
+  return '<span class="tbl-badge warn" title="Table non vérifiée (saisie manuelle ou lien)"><i class="fa-solid fa-triangle-exclamation"></i> non vérifiée</span>';
+}
+
 function renderOrders() {
   const posOrders = document.getElementById("posOrders");
   updateStats();
@@ -153,7 +160,7 @@ function renderOrders() {
     return `
       <div class="order-card ${statusClass} ${late ? 'order-late' : ''} ${isNew ? 'new' : ''}" id="order-${order.id}">
         <div class="order-head">
-          <h3><i class="fa-solid fa-utensils"></i> Table ${escapeHtml(order.table_number)}</h3>
+          <h3><i class="fa-solid fa-utensils"></i> Table ${escapeHtml(order.table_number)} ${tableBadge(order)}</h3>
           <strong>${formatPrice(order.total)}</strong>
         </div>
 

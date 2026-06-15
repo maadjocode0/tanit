@@ -10,6 +10,10 @@
 alter table public.orders
   add column if not exists notes text;
 
+-- Whether the customer confirmed their table by scanning its QR (anti-fraud).
+alter table public.orders
+  add column if not exists table_verified boolean not null default false;
+
 -- The app uses these status values: pending | preparing | done | cancelled
 -- If you have a CHECK constraint on status, replace it so "preparing" is allowed:
 do $$

@@ -332,3 +332,109 @@
   font-size: 1rem;
   margin-bottom: 1.5rem;
 }
+
+.btn-scan {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.85rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: "Inter", sans-serif;
+  margin-bottom: 0.75rem;
+  transition: filter 0.2s;
+}
+.btn-scan:hover { filter: brightness(1.1); }
+
+.manual-table summary {
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--muted);
+  list-style: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.manual-table summary::-webkit-details-marker { display: none; }
+.manual-table .table-input-row { margin-top: 0.75rem; }
+
+.tag-verified, .tag-unverified {
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  margin-left: 0.35rem;
+  white-space: nowrap;
+}
+.tag-verified { color: #1a7f37; background: #e6f4ea; }
+.tag-unverified { color: #b06b00; background: #fff3e0; }
+
+.scan-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  padding: 1rem;
+}
+
+.scan-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.scan-close {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.scan-video-wrap {
+  position: relative;
+  width: min(85vw, 340px);
+  aspect-ratio: 1;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #000;
+}
+
+#scanVideo { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.scan-frame {
+  position: absolute;
+  inset: 12%;
+  border: 3px solid rgba(201, 168, 76, 0.95);
+  border-radius: 16px;
+  pointer-events: none;
+}
+
+.scan-status {
+  color: #fff;
+  font-size: 0.9rem;
+  text-align: center;
+  max-width: 320px;
+}

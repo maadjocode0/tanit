@@ -182,6 +182,23 @@ body.pos-body {
 
 .order-head h3 { font-size: 1rem; color: #f0f0f0; display: flex; align-items: center; gap: 0.4rem; }
 .order-head h3 i { color: #c9a84c; font-size: 0.85rem; }
+
+.tbl-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.14rem 0.45rem;
+  border-radius: 999px;
+  margin-left: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  vertical-align: middle;
+}
+.tbl-badge i { font-size: 0.6rem; }
+.tbl-badge.ok { color: #3fb950; background: #23863622; border: 1px solid #23863644; }
+.tbl-badge.warn { color: #e3a008; background: #e3a00822; border: 1px solid #e3a00844; }
 .order-head strong { color: #c9a84c; font-size: 0.95rem; }
 
 

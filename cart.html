@@ -39,15 +39,21 @@
           </div>
 
           <div class="table-section">
-            <h3>Numéro de table</h3>
-            <p class="table-hint">Scannez le QR code sur votre table ou entrez le numéro manuellement.</p>
+            <h3>Votre table</h3>
+            <p class="table-hint">Scannez le QR code posé sur votre table pour la confirmer.</p>
             <div id="tableDisplay" class="table-display" style="display:none">
-              Table <strong id="tableNumber"></strong>
+              Table <strong id="tableNumber"></strong> <span id="tableVerifiedTag"></span>
             </div>
-            <div class="table-input-row">
-              <input type="number" id="tableInput" placeholder="Ex: 5" min="1" max="50" />
-              <button class="btn-confirm-table" onclick="setTableManually()">Confirmer</button>
-            </div>
+            <button type="button" class="btn-scan" onclick="startScan()">
+              <i class="fa-solid fa-camera"></i> Scanner le QR de ma table
+            </button>
+            <details class="manual-table">
+              <summary>Saisir le numéro manuellement</summary>
+              <div class="table-input-row">
+                <input type="number" id="tableInput" placeholder="Ex: 5" min="1" max="50" />
+                <button class="btn-confirm-table" onclick="setTableManually()">Confirmer</button>
+              </div>
+            </details>
           </div>
 
           <div class="note-section">
@@ -81,6 +87,20 @@
     </section>
   </main>
 
+  <div id="scanOverlay" class="scan-overlay" style="display:none">
+    <div class="scan-header">
+      <span>Visez le QR de votre table</span>
+      <button class="scan-close" onclick="stopScan()" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="scan-video-wrap">
+      <video id="scanVideo" playsinline muted autoplay></video>
+      <div class="scan-frame"></div>
+    </div>
+    <p id="scanStatus" class="scan-status"></p>
+    <canvas id="scanCanvas" hidden></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="supabase.js"></script>
   <script src="cart-script.js"></script>
 </body>

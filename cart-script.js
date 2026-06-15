@@ -13,8 +13,26 @@ function getTable() {
   return localStorage.getItem(TABLE_KEY) || "";
 }
 
-function setTable(table) {
+const VERIFIED_KEY = "tanit_table_verified";
+
+function setTable(table, verified) {
   localStorage.setItem(TABLE_KEY, table);
+  localStorage.setItem(VERIFIED_KEY, verified ? "1" : "0");
+}
+
+function isTableVerified() {
+  return localStorage.getItem(VERIFIED_KEY) === "1";
+}
+
+function showTable(table) {
+  document.getElementById("tableDisplay").style.display = "block";
+  document.getElementById("tableNumber").textContent = table;
+  const tag = document.getElementById("tableVerifiedTag");
+  if (tag) {
+    if (isTableVerified()) { tag.textContent = "✓ vérifiée"; tag.className = "tag-verified"; }
+    else { tag.textContent = "non vérifiée"; tag.className = "tag-unverified"; }
+  }
+  document.getElementById("orderBtn").disabled = false;
 }
 
 function formatPrice(price) {
@@ -71,11 +89,7 @@ function renderCart() {
 
 
   const table = getTable();
-  if (table) {
-    document.getElementById("tableDisplay").style.display = "block";
-    document.getElementById("tableNumber").textContent = table;
-    orderBtn.disabled = false;
-  }
+  if (table) showTable(table);
 }
 
 function setTableManually() {
@@ -86,10 +100,8 @@ function setTableManually() {
     return;
   }
   input.style.borderColor = "";
-  setTable(val);
-  document.getElementById("tableDisplay").style.display = "block";
-  document.getElementById("tableNumber").textContent = val;
-  document.getElementById("orderBtn").disabled = false;
+  setTable(val, false);
+  showTable(val);
 }
 const MAX_QTY_PER_ITEM = 20;
 const MAX_ITEMS_IN_CART = 15;
@@ -121,9 +133,10 @@ async function submitOrder() {
   orderBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Envoi...';
 
   try {
-    const order = await createOrder(table, cart, total, note);
+    const order = await createOrder(table, cart, total, note, isTableVerified());
     setCart([]);
     localStorage.removeItem(TABLE_KEY);
+    localStorage.removeItem(VERIFIED_KEY);
     localStorage.setItem("tanit_last_order", Date.now());
 
     const trackLink = document.getElementById("trackLink");
@@ -152,12 +165,81 @@ async function submitOrder() {
 function checkURLTable() {
   const params = new URLSearchParams(window.location.search);
   const table = params.get("table");
-  if (table) {
-    setTable(table);
-  }
+  if (table) setTable(table, false);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   checkURLTable();
   renderCart();
 });
+
+let scanStream = null;
+let scanActive = false;
+
+function parseTableFromQR(data) {
+  try {
+    const u = new URL(data);
+    const t = u.searchParams.get("table");
+    if (t && /^\d+$/.test(t) && Number(t) >= 1 && Number(t) <= 50) return String(Number(t));
+  } catch (e) {
+    const n = String(data).trim();
+    if (/^\d+$/.test(n) && Number(n) >= 1 && Number(n) <= 50) return n;
+  }
+  return null;
+}
+
+async function startScan() {
+  const overlay = document.getElementById("scanOverlay");
+  const video = document.getElementById("scanVideo");
+  const status = document.getElementById("scanStatus");
+  if (typeof jsQR === "undefined") { alert("Scanner indisponible. Utilisez la saisie manuelle."); return; }
+  overlay.style.display = "flex";
+  status.textContent = "Démarrage de la caméra…";
+  try {
+    scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+    video.srcObject = scanStream;
+    await video.play();
+    scanActive = true;
+    status.textContent = "Visez le QR code de votre table.";
+    requestAnimationFrame(scanTick);
+  } catch (err) {
+    scanActive = false;
+    status.textContent = "Accès caméra refusé. Fermez et saisissez le numéro manuellement.";
+  }
+}
+
+function stopScan() {
+  scanActive = false;
+  if (scanStream) { scanStream.getTracks().forEach(t => t.stop()); scanStream = null; }
+  const video = document.getElementById("scanVideo");
+  if (video) video.srcObject = null;
+  const overlay = document.getElementById("scanOverlay");
+  if (overlay) overlay.style.display = "none";
+}
+
+function scanTick() {
+  if (!scanActive) return;
+  const video = document.getElementById("scanVideo");
+  const canvas = document.getElementById("scanCanvas");
+  const status = document.getElementById("scanStatus");
+  if (video.readyState === video.HAVE_ENOUGH_DATA) {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const code = jsQR(img.data, img.width, img.height, { inversionAttempts: "dontInvert" });
+    if (code && code.data) {
+      const table = parseTableFromQR(code.data);
+      if (table) { onScanned(table); return; }
+      status.textContent = "QR non reconnu. Visez le QR de votre table Tanit.";
+    }
+  }
+  requestAnimationFrame(scanTick);
+}
+
+function onScanned(table) {
+  setTable(table, true);
+  stopScan();
+  showTable(table);
+}

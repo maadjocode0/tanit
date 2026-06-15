@@ -38,18 +38,18 @@ async function getOrderById(id) {
   return rows[0] || null;
 }
 
-async function createOrder(tableNumber, items, total, notes) {
+async function createOrder(tableNumber, items, total, notes, tableVerified) {
   const base = { table_number: tableNumber, items, total, status: "pending" };
-  const payload = (notes && notes.trim()) ? { ...base, notes: notes.trim() } : base;
+  const withNotes = (notes && notes.trim()) ? { ...base, notes: notes.trim() } : { ...base };
+  const full = { ...withNotes, table_verified: !!tableVerified };
   try {
-    const rows = await supabaseRequest("POST", "/orders", payload);
-    return rows[0] || null;
-  } catch (e) {
-    if (payload.notes) {
-      const rows = await supabaseRequest("POST", "/orders", base);
-      return rows[0] || null;
+    return (await supabaseRequest("POST", "/orders", full))[0] || null;
+  } catch (e1) {
+    try {
+      return (await supabaseRequest("POST", "/orders", withNotes))[0] || null;
+    } catch (e2) {
+      return (await supabaseRequest("POST", "/orders", base))[0] || null;
     }
-    throw e;
   }
 }
 
