@@ -1,7 +1,5 @@
-
 const SUPABASE_URL = "https://wuiimhdiqsrvwnoovoxg.supabase.co";
 const SUPABASE_KEY = "sb_publishable_aPa4RDt8MV4ybjFmZkt9AQ_-e8vHCa2";
-
 
 function getAuthToken() {
   return sessionStorage.getItem("tanit_token") || SUPABASE_KEY;
@@ -31,7 +29,6 @@ async function supabaseRequest(method, path, body = null, extraHeaders = {}) {
   return text ? JSON.parse(text) : [];
 }
 
-
 async function getOrders() {
   return supabaseRequest("GET", "/orders?select=*&order=created_at.desc");
 }
@@ -40,7 +37,6 @@ async function getOrderById(id) {
   const rows = await supabaseRequest("GET", `/orders?id=eq.${id}&select=*`);
   return rows[0] || null;
 }
-
 
 async function createOrder(tableNumber, items, total, notes) {
   const base = { table_number: tableNumber, items, total, status: "pending" };
@@ -61,11 +57,9 @@ async function updateOrderStatus(id, status) {
   return supabaseRequest("PATCH", `/orders?id=eq.${id}`, { status });
 }
 
-
 async function getMenuItems() {
   return supabaseRequest("GET", "/menu_items?select=*");
 }
-
 
 async function upsertMenuItem(row) {
   return supabaseRequest(
@@ -75,8 +69,6 @@ async function upsertMenuItem(row) {
   );
 }
 
-
-// Category images (custom photo per menu category)
 async function getCategoryImages() {
   return supabaseRequest("GET", "/category_images?select=*");
 }
@@ -89,12 +81,10 @@ async function upsertCategoryImage(category, image_url) {
   );
 }
 
-// Storage (public bucket "menu-photos")
 function publicPhotoUrl(path) {
   return `${SUPABASE_URL}/storage/v1/object/public/menu-photos/${path}`;
 }
 
-// Uploads a File/Blob and returns its public URL. Requires a staff session.
 async function uploadPhoto(fileOrBlob, ext = "jpg") {
   const path = `cat-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
   const res = await fetch(`${SUPABASE_URL}/storage/v1/object/menu-photos/${path}`, {
@@ -113,6 +103,14 @@ async function uploadPhoto(fileOrBlob, ext = "jpg") {
     throw err;
   }
   return publicPhotoUrl(path);
+}
+
+async function submitFeedback(orderId, rating) {
+  return supabaseRequest("POST", "/feedback", { order_id: orderId || null, rating });
+}
+
+async function getFeedback() {
+  return supabaseRequest("GET", "/feedback?select=*&order=created_at.desc");
 }
 
 async function validateToken(token) {

@@ -1,4 +1,4 @@
-// Tanit Lounge — service worker (offline app shell, stale-while-revalidate)
+
 const CACHE = "tanit-v2";
 const ASSETS = [
   "index.html", "cart.html", "track.html",
@@ -25,7 +25,7 @@ self.addEventListener("fetch", (e) => {
   const req = e.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
-  if (url.origin !== location.origin) return; // leave Supabase & CDNs to the network
+  if (url.origin !== location.origin) return;
 
   e.respondWith(
     caches.match(req).then((cached) => {

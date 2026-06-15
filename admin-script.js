@@ -1,13 +1,7 @@
-// =====================================================================
-// Menu back-office (admin.html)
-// - Toggle availability + override prices (menu_items)
-// - Manage a custom photo per category (category_images + Storage)
-// Depends on: menu-data.js (flatMenuItems, MENU_DATA, CATEGORY_PLACEHOLDERS,
-// formatPrice), supabase.js
-// =====================================================================
 
-let overrides = {};   // item name -> { available, price_override }
-let catImages = {};   // category   -> custom image_url
+
+let overrides = {};
+let catImages = {};
 
 async function ensureAuth() {
   const token = sessionStorage.getItem("tanit_token");
@@ -44,7 +38,7 @@ async function loadData() {
     imgs.forEach(r => { if (r.image_url) catImages[r.category] = r.image_url; });
   } catch (e) {
     if (e.status === 401) { logout(); return; }
-    // category_images table not created yet — photos feature stays inert
+
   }
 }
 
@@ -122,8 +116,6 @@ function render() {
   `).join("");
 }
 
-// ── Category photo handlers ────────────────────────────────────────
-
 function catSection(cat) {
   return [...document.querySelectorAll(".admin-cat")].find(s => s.dataset.cat === cat);
 }
@@ -145,7 +137,6 @@ function refreshCatPhoto(cat) {
   }
 }
 
-// Downscale a chosen image to a web-friendly JPEG before upload.
 function resizeImage(file, maxW = 1000) {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -207,8 +198,6 @@ async function onPhotoReset(cat) {
     flash("Échec de l'enregistrement", true);
   }
 }
-
-// ── Availability / price handlers ──────────────────────────────────
 
 async function onToggle(input) {
   const name = input.dataset.name;

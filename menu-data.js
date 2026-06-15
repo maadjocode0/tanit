@@ -1,7 +1,5 @@
-// =====================================================================
-// Shared menu data + helpers.
-// Loaded by: index.html (script.js), admin.html, report.html
-// =====================================================================
+
+
 
 const MENU_DATA = [
   { category: "Petit Déjeuner", image: "", items: [
@@ -171,7 +169,7 @@ const CATEGORY_PLACEHOLDERS = {
   "Formule Tanit": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80"
 };
 
-// ── Helpers ────────────────────────────────────────────────────────
+
 
 function formatPrice(price) {
   return `${Number(price).toFixed(2)} DT`;
@@ -181,13 +179,12 @@ function slugify(text) {
   return text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-");
 }
 
-// A variant line is stored in carts/orders as "Base Name (Variant)".
-// Strip the trailing " (Variant)" to recover the base menu name.
+
 function baseName(name) {
   return String(name).replace(/\s*\([^()]*\)\s*$/, "").trim();
 }
 
-// Category for an item name (variant-aware). Returns "" if unknown.
+
 function itemCategory(name) {
   const base = baseName(name);
   for (const block of MENU_DATA) {
@@ -198,8 +195,7 @@ function itemCategory(name) {
   return "";
 }
 
-// Flat list of { category, name } — one entry per orderable line
-// (variants are expanded into "Base (Variant)").
+
 function flatMenuItems() {
   const out = [];
   for (const block of MENU_DATA) {

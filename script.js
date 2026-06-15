@@ -290,6 +290,12 @@ function setupSearch() {
 
 
 
+function updateTrackButton() {
+  const btn = document.getElementById("floatingTrack");
+  if (!btn) return;
+  btn.style.display = localStorage.getItem("tanit_last_order_id") ? "flex" : "none";
+}
+
 function captureTableFromURL() {
   const table = new URLSearchParams(window.location.search).get("table");
   if (table && !isNaN(table)) {
@@ -301,9 +307,10 @@ function captureTableFromURL() {
 async function init() {
   captureTableFromURL();
   renderNavbar();
-  renderMenu();          
+  renderMenu();
   updateCartBadge();
-  await loadOverrides(); 
+  updateTrackButton();
+  await loadOverrides();
   renderMenu();
   setupScrollSpy();
   setupSearch();

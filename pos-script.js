@@ -1,12 +1,10 @@
-const LATE_THRESHOLD_MS = 10 * 60 * 1000; // 10 minutes
+const LATE_THRESHOLD_MS = 10 * 60 * 1000;
 
 let knownIds = new Set();
 let currentFilter = "pending";
 let allOrders = [];
 
-// =============================================
-// AUTH
-// =============================================
+
 
 async function ensureAuth() {
   const token = sessionStorage.getItem("tanit_token");
@@ -16,9 +14,7 @@ async function ensureAuth() {
   return true;
 }
 
-// =============================================
-// CLOCK
-// =============================================
+
 
 function startClock() {
   const el = document.getElementById("currentTime");
@@ -32,9 +28,7 @@ function startClock() {
   setInterval(tick, 1000);
 }
 
-// =============================================
-// FILTER
-// =============================================
+
 
 function setFilter(filter) {
   currentFilter = filter;
@@ -44,9 +38,7 @@ function setFilter(filter) {
   renderOrders();
 }
 
-// =============================================
-// UTILS
-// =============================================
+
 
 function formatTime(iso) {
   return new Date(iso).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
@@ -82,9 +74,7 @@ function escapeHtml(str) {
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-// =============================================
-// STATS
-// =============================================
+
 
 function updateStats() {
   const todayOrders = allOrders.filter(o => isToday(o.created_at));
@@ -113,9 +103,7 @@ function updateStats() {
   badge("badgePreparing", preparing);
 }
 
-// =============================================
-// RENDER
-// =============================================
+
 
 function getFilteredOrders() {
   const todayOrders = allOrders.filter(o => isToday(o.created_at));
@@ -189,9 +177,7 @@ function renderOrders() {
   }).join("");
 }
 
-// =============================================
-// ACTIONS
-// =============================================
+
 
 async function setStatus(id, status, confirmMsg) {
   if (confirmMsg && !confirm(confirmMsg)) return;
@@ -205,9 +191,7 @@ const markPreparing = (id) => setStatus(id, "preparing");
 const markDone = (id) => setStatus(id, "done");
 const markCancelled = (id) => setStatus(id, "cancelled", "Annuler cette commande ?");
 
-// =============================================
-// FETCH + ALERTS
-// =============================================
+
 
 async function fetchAndRender() {
   try {
@@ -264,9 +248,7 @@ function requestNotifications() {
   }
 }
 
-// =============================================
-// INIT
-// =============================================
+
 
 document.addEventListener("DOMContentLoaded", async () => {
   if (!(await ensureAuth())) return;
@@ -274,6 +256,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   startClock();
   fetchAndRender();
   setInterval(fetchAndRender, 5000);
-  // Re-render every minute so "late" timers stay fresh.
+
   setInterval(renderOrders, 60000);
 });

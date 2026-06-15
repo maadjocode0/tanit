@@ -1,4 +1,4 @@
-/* Admin back-office (admin.html) — dark theme, extends pos.css */
+
 
 .admin-toolbar {
   display: flex;
@@ -44,7 +44,7 @@
   margin: 0 0 0.6rem;
 }
 
-/* Category photo manager */
+
 .admin-cat-head {
   display: flex;
   gap: 0.9rem;
@@ -172,7 +172,7 @@
 
 .state-label { font-size: 0.72rem; color: #8b949e; width: 3rem; }
 
-/* Toggle switch */
+
 .switch { position: relative; display: inline-block; width: 42px; height: 24px; flex-shrink: 0; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider {

@@ -124,6 +124,26 @@ drop policy if exists "menu_photos_auth_delete" on storage.objects;
 create policy "menu_photos_auth_delete" on storage.objects
   for delete to authenticated using (bucket_id = 'menu-photos');
 
+-- ---------------------------------------------------------------------
+-- 5) FEEDBACK — customer service rating (1-5) submitted from track.html
+-- ---------------------------------------------------------------------
+create table if not exists public.feedback (
+  id         uuid primary key default gen_random_uuid(),
+  order_id   uuid,
+  rating     smallint not null check (rating between 1 and 5),
+  created_at timestamptz not null default now()
+);
+
+alter table public.feedback enable row level security;
+
+drop policy if exists "feedback_anon_insert" on public.feedback;
+create policy "feedback_anon_insert" on public.feedback
+  for insert to anon with check (rating between 1 and 5);
+
+drop policy if exists "feedback_auth_all" on public.feedback;
+create policy "feedback_auth_all" on public.feedback
+  for all to authenticated using (true) with check (true);
+
 -- =====================================================================
 -- ROLLBACK (only if the app breaks after enabling RLS) — run these two:
 -- alter table public.orders disable row level security;

@@ -69,7 +69,7 @@ function renderCart() {
     </div>
   `;
 
-  // Show table if already set
+
   const table = getTable();
   if (table) {
     document.getElementById("tableDisplay").style.display = "block";
@@ -93,7 +93,7 @@ function setTableManually() {
 }
 const MAX_QTY_PER_ITEM = 20;
 const MAX_ITEMS_IN_CART = 15;
-const ORDER_COOLDOWN_MS = 30000; 
+const ORDER_COOLDOWN_MS = 30000;
 
 function validateOrder(cart, table) {
   if (!cart.length) return "Panier vide.";
@@ -148,7 +148,7 @@ async function submitOrder() {
   }
 }
 
-// Check for table number in URL (from QR code)
+
 function checkURLTable() {
   const params = new URLSearchParams(window.location.search);
   const table = params.get("table");

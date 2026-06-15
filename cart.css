@@ -253,7 +253,7 @@
 
 .btn-back-menu:hover { filter: brightness(1.1); }
 
-/* Note for the kitchen */
+
 .note-section {
   background: var(--surface);
   border-radius: var(--radius-lg);
@@ -291,7 +291,7 @@
 
 .note-section textarea:focus { border-color: var(--accent); }
 
-/* Track-order button on the success screen */
+
 .btn-track {
   display: inline-flex;
   align-items: center;
