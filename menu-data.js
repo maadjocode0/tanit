@@ -51,11 +51,11 @@ const MENU_DATA = [
     { name: "Mojito Red", price: 12, desc: "" },
     { name: "Mojito Black", price: 12, desc: "" },
     { name: "Mojito Énergétique", price: 18, desc: "" },
-    { name: "Mojito + Arôme", price: 2.5, desc: "Supplément" },
-    { name: "Mojito + Nestlé", price: 3, desc: "Supplément" },
-    { name: "Mojito + Chantilly", price: 3.5, desc: "Supplément" },
-    { name: "Mojito + Amandes", price: 4, desc: "Supplément" },
-    { name: "Mojito + Pignons", price: 6.5, desc: "Supplément" }
+    { name: "Suppléments Arôme", price: 2.5, desc: "" },
+    { name: "Suppléments Nestlé", price: 3, desc: "" },
+    { name: "Suppléments Chantilly", price: 3.5, desc: "" },
+    { name: "Suppléments Amandes", price: 4, desc: "" },
+    { name: "Suppléments Pignons", price: 6.5, desc: "" }
   ]},
   { category: "Jus", image: "", items: [
     { name: "Citronnade", price: 6.5, desc: "" },
@@ -153,7 +153,7 @@ const MENU_DATA = [
     { name: "Dourade", price: 22, desc: "" },
     { name: "Loup", price: 25, desc: "" },
     { name: "Grillade Mixte", price: 33, desc: "" },
-    { name: "Grillade Fruit de Mer", price: 36, desc: "1 personne 36 DT / 2 personnes 48 DT" },
+    { name: "Grillade Fruit de Mer", desc: "", variants: [ { label: "1 personne", price: 36 }, { label: "2 personnes", price: 48 } ] },
     { name: "Crispy Poulet", price: 22, desc: "" }
   ]},
   { category: "Ojja", image: "", items: [
