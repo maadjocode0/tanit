@@ -7,6 +7,69 @@ const MENU_DATA = [
     { name: "Le Bonjour", price: 15, desc: "Café au choix - Eau 1/2 - Viennoiserie - Assiette charcuterie & fromages - Jus - Omelette fromage" },
     { name: "Familly", price: 28, desc: "2 cafés au choix - 2 jus - Eau 1L - 2 viennoiseries - Assiette charcuterie & fromages - 2 mini crêpes - 2 omelettes fromage - Corbeille de pain" }
   ]},
+  { category: "Café", image: "", items: [
+    { name: "Express", price: 3.5, desc: "" },
+    { name: "Capucin", price: 4, desc: "" },
+    { name: "Café Crème", price: 4.5, desc: "" },
+    { name: "Americain", price: 4.5, desc: "" },
+    { name: "Café Turc", price: 6.5, desc: "" },
+    { name: "Chocolat au lait", price: 4.5, desc: "" },
+    { name: "Nescafé", price: 4.5, desc: "" },
+    { name: "Cappuccino", price: 7.5, desc: "" },
+    { name: "Café Glacé", price: 7, desc: "Noisette - Vanille - Caramel" }
+  ]},
+  { category: "Thé", image: "", items: [
+    { name: "Thé à la menthe", price: 3.5, desc: "" },
+    { name: "Thé aux amandes", price: 7.5, desc: "" },
+    { name: "Thé aux pignons", price: 10, desc: "" },
+    { name: "Thé Baklawa", price: 13, desc: "" },
+    { name: "Thé infusion", price: 4.5, desc: "" },
+    { name: "Supplément Nestlé", price: 3, desc: "Supplément" },
+    { name: "Supplément Arôme", price: 2.5, desc: "Supplément" }
+  ]},
+  { category: "Drinks", image: "", items: [
+    { name: "Eau 1/2L", price: 2, desc: "" },
+    { name: "Eau 1L", price: 3.5, desc: "" },
+    { name: "Soda", price: 4.5, desc: "" },
+    { name: "Boisson Énergétique", price: 10, desc: "" }
+  ]},
+  { category: "Chocolat", image: "", items: [
+    { name: "Chocolat Classique", price: 7, desc: "Chaud ou glacé" },
+    { name: "Chocolat Nutella", price: 9, desc: "Chaud ou glacé" },
+    { name: "Chocolat Au choix", price: 11, desc: "Oreo - Snickers - Kinder - Spéculoos - Ferrero" }
+  ]},
+  { category: "Dessert", image: "", items: [
+    { name: "Cheesecake", price: 8, desc: "Nutella - Oreo - Spéculoos - Ferrero" },
+    { name: "Gâteau", price: 11, desc: "" },
+    { name: "Jwajem", price: 13, desc: "" },
+    { name: "Saint Sébastien", price: 13, desc: "" },
+    { name: "Assiette de fruits", price: 25, desc: "" }
+  ]},
+  { category: "Mojito", image: "", items: [
+    { name: "Mojito Virgin", price: 10, desc: "" },
+    { name: "Mojito Bleu", price: 12, desc: "" },
+    { name: "Mojito Red", price: 12, desc: "" },
+    { name: "Mojito Black", price: 12, desc: "" },
+    { name: "Mojito Énergétique", price: 18, desc: "" },
+    { name: "Mojito + Arôme", price: 2.5, desc: "Supplément" },
+    { name: "Mojito + Nestlé", price: 3, desc: "Supplément" },
+    { name: "Mojito + Chantilly", price: 3.5, desc: "Supplément" },
+    { name: "Mojito + Amandes", price: 4, desc: "Supplément" },
+    { name: "Mojito + Pignons", price: 6.5, desc: "Supplément" }
+  ]},
+  { category: "Jus", image: "", items: [
+    { name: "Citronnade", price: 6.5, desc: "" },
+    { name: "Jus d'orange", price: 6, desc: "" },
+    { name: "Jus de fraise", price: 7, desc: "" },
+    { name: "Citronnade à la menthe", price: 7.5, desc: "" },
+    { name: "Citronnade aux amandes", price: 10, desc: "" },
+    { name: "Jus fruits de saison", price: 10, desc: "Banane / Ananas / Kiwi / Pomme / Fruit rouge" }
+  ]},
+  { category: "Detox", image: "", items: [
+    { name: "Detox Strong", price: 13, desc: "Pomme - Carotte - Gingembre" },
+    { name: "Detox Red", price: 13, desc: "Betterave - Fraise - Citron" },
+    { name: "Detox Green", price: 13, desc: "Concombre - Kiwi - Menthe - Citron" }
+  ]},
   { category: "Cocktails", image: "", items: [
     { name: "Pina Colada", price: 10, desc: "" },
     { name: "Fraise - Banane", price: 12, desc: "" },
@@ -141,69 +204,6 @@ const MENU_DATA = [
     { name: "Offre Chicha — Chicha + Mojito", price: 16, desc: "" },
     { name: "Offre Chicha — Chicha + Thé + Eau 1/2", price: 12.5, desc: "" },
     { name: "Offre Chicha — Chicha + Café + Eau 1/2", price: 13, desc: "" }
-  ]},
-  { category: "Café", image: "", items: [
-    { name: "Express", price: 3.5, desc: "" },
-    { name: "Capucin", price: 4, desc: "" },
-    { name: "Café Crème", price: 4.5, desc: "" },
-    { name: "Americain", price: 4.5, desc: "" },
-    { name: "Café Turc", price: 6.5, desc: "" },
-    { name: "Chocolat au lait", price: 4.5, desc: "" },
-    { name: "Nescafé", price: 4.5, desc: "" },
-    { name: "Cappuccino", price: 7.5, desc: "" },
-    { name: "Café Glacé", price: 7, desc: "Noisette - Vanille - Caramel" }
-  ]},
-  { category: "Thé", image: "", items: [
-    { name: "Thé à la menthe", price: 3.5, desc: "" },
-    { name: "Thé aux amandes", price: 7.5, desc: "" },
-    { name: "Thé aux pignons", price: 10, desc: "" },
-    { name: "Thé Baklawa", price: 13, desc: "" },
-    { name: "Thé infusion", price: 4.5, desc: "" },
-    { name: "Supplément Nestlé", price: 3, desc: "Supplément" },
-    { name: "Supplément Arôme", price: 2.5, desc: "Supplément" }
-  ]},
-  { category: "Drinks", image: "", items: [
-    { name: "Eau 1/2L", price: 2, desc: "" },
-    { name: "Eau 1L", price: 3.5, desc: "" },
-    { name: "Soda", price: 4.5, desc: "" },
-    { name: "Boisson Énergétique", price: 10, desc: "" }
-  ]},
-  { category: "Chocolat", image: "", items: [
-    { name: "Chocolat Classique", price: 7, desc: "Chaud ou glacé" },
-    { name: "Chocolat Nutella", price: 9, desc: "Chaud ou glacé" },
-    { name: "Chocolat Au choix", price: 11, desc: "Oreo - Snickers - Kinder - Spéculoos - Ferrero" }
-  ]},
-  { category: "Dessert", image: "", items: [
-    { name: "Cheesecake", price: 8, desc: "Nutella - Oreo - Spéculoos - Ferrero" },
-    { name: "Gâteau", price: 11, desc: "" },
-    { name: "Jwajem", price: 13, desc: "" },
-    { name: "Saint Sébastien", price: 13, desc: "" },
-    { name: "Assiette de fruits", price: 25, desc: "" }
-  ]},
-  { category: "Mojito", image: "", items: [
-    { name: "Mojito Virgin", price: 10, desc: "" },
-    { name: "Mojito Bleu", price: 12, desc: "" },
-    { name: "Mojito Red", price: 12, desc: "" },
-    { name: "Mojito Black", price: 12, desc: "" },
-    { name: "Mojito Énergétique", price: 18, desc: "" },
-    { name: "Mojito + Arôme", price: 2.5, desc: "Supplément" },
-    { name: "Mojito + Nestlé", price: 3, desc: "Supplément" },
-    { name: "Mojito + Chantilly", price: 3.5, desc: "Supplément" },
-    { name: "Mojito + Amandes", price: 4, desc: "Supplément" },
-    { name: "Mojito + Pignons", price: 6.5, desc: "Supplément" }
-  ]},
-  { category: "Jus", image: "", items: [
-    { name: "Citronnade", price: 6.5, desc: "" },
-    { name: "Jus d'orange", price: 6, desc: "" },
-    { name: "Jus de fraise", price: 7, desc: "" },
-    { name: "Citronnade à la menthe", price: 7.5, desc: "" },
-    { name: "Citronnade aux amandes", price: 10, desc: "" },
-    { name: "Jus fruits de saison", price: 10, desc: "Banane / Ananas / Kiwi / Pomme / Fruit rouge" }
-  ]},
-  { category: "Detox", image: "", items: [
-    { name: "Detox Strong", price: 13, desc: "Pomme - Carotte - Gingembre" },
-    { name: "Detox Red", price: 13, desc: "Betterave - Fraise - Citron" },
-    { name: "Detox Green", price: 13, desc: "Concombre - Kiwi - Menthe - Citron" }
   ]}
 ];
 
