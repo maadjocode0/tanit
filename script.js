@@ -1,12 +1,6 @@
-// =====================================================================
-// Public menu page (index.html)
-// Depends on: menu-data.js (MENU_DATA, helpers) and supabase.js (overrides)
-// =====================================================================
 
-// Availability / price overrides loaded from Supabase (menu_items table),
-// keyed by orderable line name (e.g. "Beef Burger (Double)"). Empty = all
-// available at coded prices, so the menu still works if the DB is offline.
 let MENU_OVERRIDES = {};
+let CATEGORY_IMAGES = {};
 
 async function loadOverrides() {
   try {
@@ -15,6 +9,13 @@ async function loadOverrides() {
     rows.forEach(r => { MENU_OVERRIDES[r.name] = r; });
   } catch (e) {
     MENU_OVERRIDES = {};
+  }
+  try {
+    const imgs = await getCategoryImages();
+    CATEGORY_IMAGES = {};
+    imgs.forEach(r => { if (r.image_url) CATEGORY_IMAGES[r.category] = r.image_url; });
+  } catch (e) {
+    CATEGORY_IMAGES = {};
   }
 }
 
@@ -32,9 +33,6 @@ function isSoldOut(name) {
   return !!(o && o.available === false);
 }
 
-// =============================================
-// CART
-// =============================================
 
 function getCart() {
   return JSON.parse(localStorage.getItem("tanit_cart") || "[]");
@@ -57,7 +55,7 @@ function escName(name) {
   return String(name).replace(/'/g, "\\'");
 }
 
-// Markup for the add (+) button or the −/qty/+ control for one orderable line.
+
 function addControlHTML(name, price, qty) {
   if (qty > 0) {
     return `
@@ -120,11 +118,8 @@ function showToast(message) {
   showToast._t = setTimeout(() => toast.classList.remove("show"), 1800);
 }
 
-// =============================================
-// MENU
-// =============================================
-
 function getCategoryImage(block) {
+  if (CATEGORY_IMAGES[block.category]) return CATEGORY_IMAGES[block.category];
   if (block.image && block.image.trim() !== "") return block.image;
   return CATEGORY_PLACEHOLDERS[block.category] ||
     "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80";
@@ -139,7 +134,6 @@ function renderNavbar() {
   }).join("");
 }
 
-// One orderable line (a plain item, or one variant of an item).
 function lineHTML(displayLabel, lineName, codedPrice) {
   const price = effectivePrice(lineName, codedPrice);
   const soldOut = isSoldOut(lineName);
@@ -204,7 +198,7 @@ function renderMenu() {
     `;
   }).join("");
 
-  // Toggle category collapse
+
   menuContainer.querySelectorAll(".category-toggle").forEach((btn) => {
     btn.addEventListener("click", () => {
       const items = document.getElementById(btn.dataset.target);
@@ -216,7 +210,6 @@ function renderMenu() {
     });
   });
 
-  // Expand item description on tap
   menuContainer.querySelectorAll(".menu-item").forEach((item) => {
     item.addEventListener("click", () => {
       const isExpanded = item.classList.contains("expanded");
@@ -225,10 +218,6 @@ function renderMenu() {
     });
   });
 }
-
-// =============================================
-// SCROLL SPY
-// =============================================
 
 function setupScrollSpy() {
   const pills = document.querySelectorAll(".nav-pill");
@@ -299,9 +288,7 @@ function setupSearch() {
   });
 }
 
-// =============================================
-// TABLE FROM QR (index.html?table=N)
-// =============================================
+
 
 function captureTableFromURL() {
   const table = new URLSearchParams(window.location.search).get("table");
@@ -311,16 +298,12 @@ function captureTableFromURL() {
   }
 }
 
-// =============================================
-// INIT
-// =============================================
-
 async function init() {
   captureTableFromURL();
   renderNavbar();
-  renderMenu();          // instant render with coded prices
+  renderMenu();          
   updateCartBadge();
-  await loadOverrides(); // then apply sold-out / price overrides
+  await loadOverrides(); 
   renderMenu();
   setupScrollSpy();
   setupSearch();

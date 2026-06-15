@@ -1,10 +1,8 @@
-// =====================================================================
-// Supabase REST + Auth helpers (shared by every page)
-// =====================================================================
+
 const SUPABASE_URL = "https://wuiimhdiqsrvwnoovoxg.supabase.co";
 const SUPABASE_KEY = "sb_publishable_aPa4RDt8MV4ybjFmZkt9AQ_-e8vHCa2";
 
-// Staff access token if logged in, otherwise the public (anon) key.
+
 function getAuthToken() {
   return sessionStorage.getItem("tanit_token") || SUPABASE_KEY;
 }
@@ -33,7 +31,7 @@ async function supabaseRequest(method, path, body = null, extraHeaders = {}) {
   return text ? JSON.parse(text) : [];
 }
 
-// ── ORDERS ─────────────────────────────────────────────────────────
+
 async function getOrders() {
   return supabaseRequest("GET", "/orders?select=*&order=created_at.desc");
 }
@@ -43,8 +41,7 @@ async function getOrderById(id) {
   return rows[0] || null;
 }
 
-// Returns the created order row (so the caller gets its id for tracking).
-// Resilient: if the `notes` column doesn't exist yet, retries without it.
+
 async function createOrder(tableNumber, items, total, notes) {
   const base = { table_number: tableNumber, items, total, status: "pending" };
   const payload = (notes && notes.trim()) ? { ...base, notes: notes.trim() } : base;
@@ -64,12 +61,12 @@ async function updateOrderStatus(id, status) {
   return supabaseRequest("PATCH", `/orders?id=eq.${id}`, { status });
 }
 
-// ── MENU ITEMS (availability / price overrides) ────────────────────
+
 async function getMenuItems() {
   return supabaseRequest("GET", "/menu_items?select=*");
 }
 
-// Upsert by primary key `name`.
+
 async function upsertMenuItem(row) {
   return supabaseRequest(
     "POST", "/menu_items",
@@ -78,8 +75,46 @@ async function upsertMenuItem(row) {
   );
 }
 
-// ── AUTH ───────────────────────────────────────────────────────────
-// True only for a real, non-expired staff session token.
+
+// Category images (custom photo per menu category)
+async function getCategoryImages() {
+  return supabaseRequest("GET", "/category_images?select=*");
+}
+
+async function upsertCategoryImage(category, image_url) {
+  return supabaseRequest(
+    "POST", "/category_images",
+    { category, image_url, updated_at: new Date().toISOString() },
+    { "Prefer": "resolution=merge-duplicates,return=representation" }
+  );
+}
+
+// Storage (public bucket "menu-photos")
+function publicPhotoUrl(path) {
+  return `${SUPABASE_URL}/storage/v1/object/public/menu-photos/${path}`;
+}
+
+// Uploads a File/Blob and returns its public URL. Requires a staff session.
+async function uploadPhoto(fileOrBlob, ext = "jpg") {
+  const path = `cat-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/menu-photos/${path}`, {
+    method: "POST",
+    headers: {
+      "apikey": SUPABASE_KEY,
+      "Authorization": `Bearer ${getAuthToken()}`,
+      "Content-Type": fileOrBlob.type || "image/jpeg",
+      "x-upsert": "true"
+    },
+    body: fileOrBlob
+  });
+  if (!res.ok) {
+    const err = new Error((await res.text()) || res.statusText);
+    err.status = res.status;
+    throw err;
+  }
+  return publicPhotoUrl(path);
+}
+
 async function validateToken(token) {
   if (!token || token === SUPABASE_KEY) return false;
   try {
@@ -97,7 +132,6 @@ function logout() {
   window.location.href = "login.html";
 }
 
-// ── PWA: register the service worker (secure contexts only) ────────
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("sw.js").catch(() => {});

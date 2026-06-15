@@ -83,6 +83,47 @@ create policy "menu_anon_select" on public.menu_items
 create policy "menu_auth_all" on public.menu_items
   for all to authenticated using (true) with check (true);
 
+-- ---------------------------------------------------------------------
+-- 4) CATEGORY IMAGES — custom photo per menu category + photo storage
+-- ---------------------------------------------------------------------
+create table if not exists public.category_images (
+  category   text primary key,
+  image_url  text,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.category_images enable row level security;
+
+drop policy if exists "catimg_anon_select" on public.category_images;
+create policy "catimg_anon_select" on public.category_images
+  for select to anon using (true);
+
+drop policy if exists "catimg_auth_all" on public.category_images;
+create policy "catimg_auth_all" on public.category_images
+  for all to authenticated using (true) with check (true);
+
+-- Public storage bucket for uploaded dish photos.
+insert into storage.buckets (id, name, public)
+values ('menu-photos', 'menu-photos', true)
+on conflict (id) do nothing;
+
+-- Anyone can view photos; only staff (authenticated) can upload/replace.
+drop policy if exists "menu_photos_public_read" on storage.objects;
+create policy "menu_photos_public_read" on storage.objects
+  for select to public using (bucket_id = 'menu-photos');
+
+drop policy if exists "menu_photos_auth_insert" on storage.objects;
+create policy "menu_photos_auth_insert" on storage.objects
+  for insert to authenticated with check (bucket_id = 'menu-photos');
+
+drop policy if exists "menu_photos_auth_update" on storage.objects;
+create policy "menu_photos_auth_update" on storage.objects
+  for update to authenticated using (bucket_id = 'menu-photos') with check (bucket_id = 'menu-photos');
+
+drop policy if exists "menu_photos_auth_delete" on storage.objects;
+create policy "menu_photos_auth_delete" on storage.objects
+  for delete to authenticated using (bucket_id = 'menu-photos');
+
 -- =====================================================================
 -- ROLLBACK (only if the app breaks after enabling RLS) — run these two:
 -- alter table public.orders disable row level security;

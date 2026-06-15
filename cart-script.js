@@ -93,7 +93,7 @@ function setTableManually() {
 }
 const MAX_QTY_PER_ITEM = 20;
 const MAX_ITEMS_IN_CART = 15;
-const ORDER_COOLDOWN_MS = 30000; // 30 secondes entre 2 commandes
+const ORDER_COOLDOWN_MS = 30000; 
 
 function validateOrder(cart, table) {
   if (!cart.length) return "Panier vide.";

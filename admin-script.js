@@ -1,10 +1,13 @@
 // =====================================================================
 // Menu back-office (admin.html)
-// Toggle availability + override prices, stored in Supabase menu_items.
-// Depends on: menu-data.js (flatMenuItems, MENU_DATA, formatPrice), supabase.js
+// - Toggle availability + override prices (menu_items)
+// - Manage a custom photo per category (category_images + Storage)
+// Depends on: menu-data.js (flatMenuItems, MENU_DATA, CATEGORY_PLACEHOLDERS,
+// formatPrice), supabase.js
 // =====================================================================
 
-let overrides = {};   // name -> { available, price_override }
+let overrides = {};   // item name -> { available, price_override }
+let catImages = {};   // category   -> custom image_url
 
 async function ensureAuth() {
   const token = sessionStorage.getItem("tanit_token");
@@ -17,31 +20,67 @@ async function ensureAuth() {
 function escapeHtml(str) {
   return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
+function jsStr(str) { return String(str).replace(/\\/g, "\\\\").replace(/'/g, "\\'"); }
 
 function flash(msg, isError) {
   const el = document.getElementById("saveStatus");
   el.textContent = msg;
   el.className = "save-status show" + (isError ? " error" : "");
   clearTimeout(flash._t);
-  flash._t = setTimeout(() => { el.className = "save-status"; }, 1800);
+  flash._t = setTimeout(() => { el.className = "save-status"; }, 2200);
 }
 
-async function loadOverrides() {
-  overrides = {};
+async function loadData() {
+  overrides = {}; catImages = {};
   try {
     const rows = await getMenuItems();
     rows.forEach(r => { overrides[r.name] = r; });
   } catch (e) {
     if (e.status === 401) { logout(); return; }
-    flash("Table menu_items absente — lancez supabase-setup.sql", true);
+    flash("Table menu_items absente — lancez le SQL", true);
   }
+  try {
+    const imgs = await getCategoryImages();
+    imgs.forEach(r => { if (r.image_url) catImages[r.category] = r.image_url; });
+  } catch (e) {
+    if (e.status === 401) { logout(); return; }
+    // category_images table not created yet — photos feature stays inert
+  }
+}
+
+function currentCatImage(cat) {
+  return catImages[cat] || CATEGORY_PLACEHOLDERS[cat] || "";
+}
+
+function catPhotoHTML(cat) {
+  const c = jsStr(cat);
+  const custom = catImages[cat] || "";
+  return `
+    <div class="cat-photo">
+      <img class="cat-thumb" src="${escapeHtml(currentCatImage(cat))}" alt="" loading="lazy"
+           onerror="this.classList.add('broken')" />
+      ${custom ? `<span class="cat-photo-tag">perso</span>` : ``}
+    </div>
+    <div class="cat-photo-body">
+      <h2>${escapeHtml(cat)}</h2>
+      <div class="cat-photo-actions">
+        <label class="photo-btn">
+          <input type="file" accept="image/*" hidden onchange="onPhotoFile(this, '${c}')" />
+          <i class="fa-solid fa-camera"></i> Changer la photo
+        </label>
+        <input type="text" class="cat-url" placeholder="ou coller un lien d'image…"
+               value="${escapeHtml(custom)}" onchange="onPhotoUrl(this, '${c}')" />
+        <button class="photo-reset" title="Photo par défaut" onclick="onPhotoReset('${c}')">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+      </div>
+    </div>`;
 }
 
 function render() {
   const root = document.getElementById("adminList");
   const items = flatMenuItems();
 
-  // Group by category, preserving MENU_DATA order.
   const byCat = new Map();
   items.forEach(it => {
     if (!byCat.has(it.category)) byCat.set(it.category, []);
@@ -50,7 +89,7 @@ function render() {
 
   root.innerHTML = [...byCat.entries()].map(([cat, list]) => `
     <section class="admin-cat" data-cat="${escapeHtml(cat)}">
-      <h2>${escapeHtml(cat)}</h2>
+      <div class="admin-cat-head">${catPhotoHTML(cat)}</div>
       <div class="admin-rows">
         ${list.map(it => {
           const o = overrides[it.name] || {};
@@ -82,6 +121,94 @@ function render() {
     </section>
   `).join("");
 }
+
+// ── Category photo handlers ────────────────────────────────────────
+
+function catSection(cat) {
+  return [...document.querySelectorAll(".admin-cat")].find(s => s.dataset.cat === cat);
+}
+
+function refreshCatPhoto(cat) {
+  const section = catSection(cat);
+  if (!section) return;
+  const img = section.querySelector(".cat-thumb");
+  if (img) { img.classList.remove("broken"); img.src = currentCatImage(cat); }
+  const url = section.querySelector(".cat-url");
+  if (url) url.value = catImages[cat] || "";
+  const tag = section.querySelector(".cat-photo-tag");
+  if (catImages[cat] && !tag) {
+    const span = document.createElement("span");
+    span.className = "cat-photo-tag"; span.textContent = "perso";
+    section.querySelector(".cat-photo").appendChild(span);
+  } else if (!catImages[cat] && tag) {
+    tag.remove();
+  }
+}
+
+// Downscale a chosen image to a web-friendly JPEG before upload.
+function resizeImage(file, maxW = 1000) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const scale = Math.min(1, maxW / img.width);
+      const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      canvas.toBlob(b => b ? resolve(b) : reject(new Error("toBlob failed")), "image/jpeg", 0.82);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("image load failed")); };
+    img.src = url;
+  });
+}
+
+async function onPhotoFile(input, cat) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  flash("Envoi de la photo…");
+  try {
+    const blob = await resizeImage(file);
+    const url = await uploadPhoto(blob, "jpg");
+    await upsertCategoryImage(cat, url);
+    catImages[cat] = url;
+    refreshCatPhoto(cat);
+    flash(`Photo mise à jour : ${cat}`);
+  } catch (e) {
+    if (e.status === 401) return logout();
+    flash("Échec de l'envoi (table/bucket manquant ?)", true);
+  } finally {
+    input.value = "";
+  }
+}
+
+async function onPhotoUrl(input, cat) {
+  const url = input.value.trim();
+  try {
+    await upsertCategoryImage(cat, url || null);
+    if (url) catImages[cat] = url; else delete catImages[cat];
+    refreshCatPhoto(cat);
+    flash(url ? `Photo mise à jour : ${cat}` : `Photo par défaut : ${cat}`);
+  } catch (e) {
+    if (e.status === 401) return logout();
+    flash("Échec de l'enregistrement", true);
+  }
+}
+
+async function onPhotoReset(cat) {
+  try {
+    await upsertCategoryImage(cat, null);
+    delete catImages[cat];
+    refreshCatPhoto(cat);
+    flash(`Photo par défaut : ${cat}`);
+  } catch (e) {
+    if (e.status === 401) return logout();
+    flash("Échec de l'enregistrement", true);
+  }
+}
+
+// ── Availability / price handlers ──────────────────────────────────
 
 async function onToggle(input) {
   const name = input.dataset.name;
@@ -122,9 +249,10 @@ function setupSearch() {
   input.addEventListener("input", () => {
     const q = input.value.trim().toLowerCase();
     document.querySelectorAll(".admin-cat").forEach(cat => {
-      let any = false;
+      const catMatch = cat.dataset.cat.toLowerCase().includes(q);
+      let any = catMatch;
       cat.querySelectorAll(".admin-row").forEach(row => {
-        const match = row.dataset.name.toLowerCase().includes(q);
+        const match = catMatch || row.dataset.name.toLowerCase().includes(q);
         row.style.display = match ? "" : "none";
         if (match) any = true;
       });
@@ -135,7 +263,7 @@ function setupSearch() {
 
 document.addEventListener("DOMContentLoaded", async () => {
   if (!(await ensureAuth())) return;
-  await loadOverrides();
+  await loadData();
   render();
   setupSearch();
 });
