@@ -106,7 +106,7 @@ async function uploadPhoto(fileOrBlob, ext = "jpg") {
 }
 
 async function submitFeedback(orderId, rating) {
-  return supabaseRequest("POST", "/feedback", { order_id: orderId || null, rating });
+  return supabaseRequest("POST", "/feedback", { order_id: orderId || null, rating }, { "Prefer": "return=minimal" });
 }
 
 async function getFeedback() {
