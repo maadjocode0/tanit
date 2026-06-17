@@ -56,18 +56,14 @@
 <body>
   <div class="wrap">
     <h1>QR codes des tables</h1>
-    <p class="sub">Génère un QR par table. En le scannant, le client ouvre le menu avec sa table déjà sélectionnée.</p>
+    <p class="sub">30 QR codes (tables 1 à 30). En scannant, le client ouvre le menu avec sa table déjà sélectionnée.</p>
 
     <div class="controls no-print">
-      <div class="field">
-        <label>Nombre de tables</label>
-        <input type="number" id="count" min="1" max="50" value="12" />
-      </div>
       <div class="field">
         <label>URL du menu (sans ?table=)</label>
         <input type="text" id="baseUrl" class="url" />
       </div>
-      <button onclick="generate()">Générer</button>
+      <button onclick="generate()">Régénérer</button>
       <button class="ghost" onclick="window.print()">🖨️ Imprimer</button>
     </div>
 
@@ -86,7 +82,7 @@
     }
 
     function generate() {
-      const count = Math.min(50, Math.max(1, parseInt(document.getElementById("count").value || "1", 10)));
+      const count = 30;
       const base = document.getElementById("baseUrl").value.trim() || defaultBase();
       const grid = document.getElementById("grid");
       grid.innerHTML = "";
