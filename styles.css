@@ -744,3 +744,5 @@ h1, h2, h3, h4, p { margin: 0; }
   .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
   .footer-bottom { justify-content: center; text-align: center; }
 }
+
+.footer-credit { color: var(--accent); }
