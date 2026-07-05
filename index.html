@@ -18,7 +18,6 @@
 
   <header class="site-header" id="siteHeader">
     <div class="header-hero">
-      <div class="hh-logo"><img src="logo-tanit.jpg" alt="Tanit Lounge" /></div>
       <p class="hh-eyebrow">Megrine</p>
       <h1 class="hh-title">Tanit Lounge</h1>
       <p class="hh-tagline">Reserved by Tanit</p>
@@ -40,10 +39,15 @@
         <span class="cart-count" id="cartBadge">0</span>
       </button>
     </div>
-    <div class="header-search">
+    <div class="header-search" id="headerSearch">
+      <button class="search-toggle" id="searchToggle" aria-label="Rechercher">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span class="search-label">Rechercher</span>
+      </button>
       <div class="search-inner">
         <i class="fa-solid fa-magnifying-glass"></i>
         <input type="text" id="searchInput" placeholder="Rechercher un article..." />
+        <button class="search-close" id="searchClose" aria-label="Fermer la recherche"><i class="fa-solid fa-xmark"></i></button>
       </div>
     </div>
   </header>

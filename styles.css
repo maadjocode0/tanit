@@ -871,13 +871,6 @@ html { scroll-behavior: smooth; }
   overflow: hidden;
   transition: max-height 0.45s ease, opacity 0.3s ease, padding 0.45s ease, transform 0.45s ease;
 }
-.hh-logo {
-  width: 86px; height: 86px; margin: 0 auto 0.7rem;
-  border-radius: 20px; border: 2px solid var(--accent);
-  background: #0d0d0d; padding: 5px;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
-}
-.hh-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 14px; display: block; }
 .hh-eyebrow { color: var(--accent); font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase; font-weight: 600; }
 .hh-title {
   font-family: "Cormorant Garamond", serif;
@@ -907,5 +900,76 @@ html { scroll-behavior: smooth; }
 @media (max-width: 480px) {
   .header-bar { gap: 0.5rem; }
   .site-header.scrolled .header-bar { padding: 0.5rem 0.8rem; }
-  .hh-logo { width: 74px; height: 74px; }
 }
+
+/* ===== Search: icon → hover label → expanded bar ===== */
+.header-search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 54px;
+}
+
+.search-toggle {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 0.95rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  font-family: "Inter", sans-serif;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.search-toggle i { font-size: 0.95rem; }
+.search-toggle:hover, .search-toggle:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.search-label {
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  white-space: nowrap;
+  margin-left: 0;
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transform: translateX(-8px);
+  transition: max-width 0.35s ease, opacity 0.25s ease, transform 0.35s ease, margin-left 0.35s ease;
+}
+.search-toggle:hover .search-label,
+.search-toggle:focus-visible .search-label {
+  max-width: 120px;
+  opacity: 1;
+  transform: translateX(0);
+  margin-left: 0.55rem;
+}
+
+.header-search .search-inner { display: none; width: 100%; }
+.header-search.open .search-toggle { display: none; }
+.header-search.open .search-inner {
+  display: flex;
+  animation: searchGrow 0.3s ease;
+}
+@keyframes searchGrow {
+  from { transform: scaleX(0.7); opacity: 0; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+
+.search-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0.15rem 0.3rem;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+.search-close:hover { color: var(--accent); }
