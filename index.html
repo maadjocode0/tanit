@@ -75,8 +75,48 @@
     </section>
   </main>
 
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo-frame">
+          <img src="logo-tanit.jpg" alt="Tanit Lounge — Megrine" class="footer-logo" />
+        </div>
+        <p class="footer-tagline">Reserved by Tanit</p>
+        <div class="footer-socials">
+          <a href="https://www.facebook.com/profile.php?id=100057483458328&locale=fr_FR" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="tel:+21698368065" aria-label="Appeler"><i class="fa-solid fa-phone"></i></a>
+          <a href="https://www.google.com/maps/place/Tanit+Lounge+Megrine" target="_blank" rel="noopener" aria-label="Localisation"><i class="fa-solid fa-location-dot"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Horaires</h4>
+          <p>Lundi – Dimanche</p>
+          <p>08:00 – 12:00</p>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <p><a href="tel:+21698368065"><i class="fa-solid fa-phone"></i> +216 98 368 065</a></p>
+          <p><a href="https://www.google.com/maps/place/Tanit+Lounge+Megrine" target="_blank" rel="noopener"><i class="fa-solid fa-location-dot"></i> Megrine, Tunisie</a></p>
+        </div>
+        <div class="footer-col">
+          <h4>Menu</h4>
+          <p><a href="index.html"><i class="fa-solid fa-utensils"></i> Voir la carte</a></p>
+          <p><a href="cart.html"><i class="fa-solid fa-basket-shopping"></i> Mon panier</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span id="footerYear">2026</span> Tanit Lounge — Tous droits réservés.</span>
+      <span class="footer-made">Megrine, Tunisie</span>
+    </div>
+  </footer>
+
   <script src="menu-data.js"></script>
   <script src="supabase.js"></script>
   <script src="script.js"></script>
+  <script>document.getElementById("footerYear").textContent = new Date().getFullYear();</script>
 </body>
 </html>
