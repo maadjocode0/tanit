@@ -16,38 +16,48 @@
 </head>
 <body>
 
-  <header class="hero">
-    <div class="hero-card">
-      <p class="eyebrow">Megrine</p>
-      <h1>Tanit Lounge</h1>
-      <p class="hero-text">Reserved by Tanit</p>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-logo"><img src="logo-tanit.jpg" alt="Tanit Lounge" /></span>
+        <span class="brand-text">
+          <span class="brand-name">Tanit Lounge</span>
+          <span class="brand-sub">Megrine</span>
+        </span>
+      </a>
+      <nav class="header-nav">
+        <a href="#menu">Menu</a>
+        <a href="#contact">Nous trouver</a>
+      </nav>
+      <button class="header-cart" id="headerCart" onclick="window.location.href='cart.html'" aria-label="Voir le panier">
+        <i class="fa-solid fa-basket-shopping"></i>
+        <span class="cart-count" id="cartBadge">0</span>
+      </button>
+    </div>
+    <div class="header-search">
+      <div class="search-inner">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="Rechercher un article..." />
+      </div>
     </div>
   </header>
 
   <nav class="category-nav">
     <div id="categoryNav" class="nav-pills"></div>
   </nav>
-  <div class="search-bar-wrapper">
-  <div class="search-bar">
-    <i class="fa-solid fa-magnifying-glass search-icon"></i>
-    <input type="text" id="searchInput" placeholder="Rechercher un article..." />
-  </div>
-</div>
-<div class="floating-cart" id="floatingCart" onclick="window.location.href='cart.html'" style="display:none">
-  <i class="fa-solid fa-basket-shopping"></i>
-  <span id="cartBadge">0</span>
-</div>
-<a class="floating-track" id="floatingTrack" href="track.html" style="display:none">
-  <i class="fa-solid fa-location-arrow"></i>
-  <span>Suivre ma commande</span>
-</a>
+
+  <a class="floating-track" id="floatingTrack" href="track.html" style="display:none">
+    <i class="fa-solid fa-location-arrow"></i>
+    <span>Suivre ma commande</span>
+  </a>
+
   <main class="container">
     <section class="section" id="menu">
       <div id="menuContainer"></div>
     </section>
   </main>
 
-  <footer class="site-footer">
+  <footer class="site-footer" id="contact">
     <div class="footer-inner">
       <div class="footer-brand">
         <div class="footer-logo-frame">

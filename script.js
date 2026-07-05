@@ -46,9 +46,20 @@ function updateCartBadge() {
   const cart = getCart();
   const total = cart.reduce((sum, i) => sum + i.qty, 0);
   const badge = document.getElementById("cartBadge");
+  if (badge) {
+    badge.textContent = total;
+    badge.style.display = total > 0 ? "grid" : "none";
+  }
   const floatingCart = document.getElementById("floatingCart");
-  if (badge) badge.textContent = total;
   if (floatingCart) floatingCart.style.display = total > 0 ? "flex" : "none";
+}
+
+function pulseHeaderCart() {
+  const cart = document.getElementById("headerCart");
+  if (!cart) return;
+  cart.classList.remove("bump");
+  void cart.offsetWidth;
+  cart.classList.add("bump");
 }
 
 function escName(name) {
@@ -83,6 +94,7 @@ function addToCart(name, price) {
   }
   setCart(cart);
   updateCartBadge();
+  pulseHeaderCart();
 
   const control = document.querySelector(`.btn-add[data-name="${CSS.escape(name)}"], .item-qty-control[data-name="${CSS.escape(name)}"]`);
   if (control) control.outerHTML = addControlHTML(name, price, cartQty(name));
@@ -99,6 +111,7 @@ function changeQtyInMenu(name, price, delta) {
   if (existing.qty <= 0) cart.splice(cart.indexOf(existing), 1);
   setCart(cart);
   updateCartBadge();
+  if (delta > 0) pulseHeaderCart();
 
   const control = document.querySelector(`.item-qty-control[data-name="${CSS.escape(name)}"], .btn-add[data-name="${CSS.escape(name)}"]`);
   if (control) control.outerHTML = addControlHTML(name, price, cartQty(name));
@@ -304,8 +317,14 @@ function captureTableFromURL() {
   }
 }
 
+function setHeaderHeight() {
+  const h = document.querySelector(".site-header");
+  if (h) document.documentElement.style.setProperty("--header-h", h.offsetHeight + "px");
+}
+
 async function init() {
   captureTableFromURL();
+  setHeaderHeight();
   renderNavbar();
   renderMenu();
   updateCartBadge();
@@ -314,6 +333,8 @@ async function init() {
   renderMenu();
   setupScrollSpy();
   setupSearch();
+  window.addEventListener("resize", setHeaderHeight);
+  window.addEventListener("load", setHeaderHeight);
 }
 
 document.addEventListener("DOMContentLoaded", init);
