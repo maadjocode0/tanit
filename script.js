@@ -317,14 +317,16 @@ function captureTableFromURL() {
   }
 }
 
-function setHeaderHeight() {
-  const h = document.querySelector(".site-header");
-  if (h) document.documentElement.style.setProperty("--header-h", h.offsetHeight + "px");
+function syncHeader() {
+  const header = document.querySelector(".site-header");
+  if (!header) return;
+  header.classList.toggle("scrolled", window.scrollY > 40);
+  document.documentElement.style.setProperty("--header-h", header.offsetHeight + "px");
 }
 
 async function init() {
   captureTableFromURL();
-  setHeaderHeight();
+  syncHeader();
   renderNavbar();
   renderMenu();
   updateCartBadge();
@@ -333,8 +335,11 @@ async function init() {
   renderMenu();
   setupScrollSpy();
   setupSearch();
-  window.addEventListener("resize", setHeaderHeight);
-  window.addEventListener("load", setHeaderHeight);
+  window.addEventListener("scroll", syncHeader, { passive: true });
+  window.addEventListener("resize", syncHeader);
+  window.addEventListener("load", syncHeader);
+  const header = document.querySelector(".site-header");
+  if (header) header.addEventListener("transitionend", syncHeader);
 }
 
 document.addEventListener("DOMContentLoaded", init);
