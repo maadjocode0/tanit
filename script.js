@@ -326,13 +326,16 @@ function setupSearchToggle() {
 
   toggle.addEventListener("click", () => {
     wrap.classList.add("open");
-    syncHeader();
+    const bar = wrap.parentElement;
+    if (bar && bar.classList.contains("header-bar")) bar.classList.add("searching");
     setTimeout(() => input.focus(), 80);
   });
 
   function collapseSearch() {
     if (!wrap.classList.contains("open")) return;
     wrap.classList.remove("open");
+    const bar = document.querySelector(".header-bar");
+    if (bar) bar.classList.remove("searching");
     if (input.value) {
       input.value = "";
       input.dispatchEvent(new Event("input"));
@@ -350,7 +353,20 @@ function setupSearchToggle() {
 function syncHeader() {
   const header = document.querySelector(".site-header");
   if (!header) return;
-  header.classList.toggle("scrolled", window.scrollY > 40);
+  const scrolled = window.scrollY > 40;
+  header.classList.toggle("scrolled", scrolled);
+
+  const search = document.getElementById("headerSearch");
+  const bar = header.querySelector(".header-bar");
+  const cart = document.getElementById("headerCart");
+  if (search && bar && cart && !search.classList.contains("open")) {
+    if (scrolled && search.parentElement !== bar) {
+      bar.insertBefore(search, cart);
+    } else if (!scrolled && search.parentElement === bar) {
+      header.appendChild(search);
+    }
+  }
+
   document.documentElement.style.setProperty("--header-h", header.offsetHeight + "px");
 }
 

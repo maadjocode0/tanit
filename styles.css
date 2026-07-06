@@ -973,3 +973,16 @@ html { scroll-behavior: smooth; }
   transition: color 0.2s;
 }
 .search-close:hover { color: var(--accent); }
+
+/* ===== Search icon aligned inside the compact bar (scrolled state) ===== */
+.header-bar .header-search {
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  flex: 0 0 auto;
+  justify-content: flex-start;
+}
+.header-bar .header-search.open { flex: 1 1 auto; min-width: 0; }
+.header-bar .header-search.open .search-inner { width: 100%; }
+.header-bar.searching .header-nav { display: none; }
+.header-bar.searching .brand-text { display: none; }
