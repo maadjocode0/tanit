@@ -452,7 +452,7 @@ h1, h2, h3, h4, p { margin: 0; }
   filter: brightness(1.08);
 }
 
-#cartBadge {
+#floatingCartBadge {
   background: #fff;
   color: var(--accent);
   border-radius: 50%;
@@ -463,6 +463,8 @@ h1, h2, h3, h4, p { margin: 0; }
   font-size: 0.78rem;
   font-weight: 700;
 }
+
+.floating-cart.bump { animation: cartBump 0.45s ease; }
 
 .floating-track {
   position: fixed;

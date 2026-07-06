@@ -43,23 +43,36 @@ function setCart(cart) {
 }
 
 function updateCartBadge() {
-  const cart = getCart();
-  const total = cart.reduce((sum, i) => sum + i.qty, 0);
+  const total = getCart().reduce((sum, i) => sum + i.qty, 0);
   const badge = document.getElementById("cartBadge");
   if (badge) {
     badge.textContent = total;
     badge.style.display = total > 0 ? "grid" : "none";
   }
-  const floatingCart = document.getElementById("floatingCart");
-  if (floatingCart) floatingCart.style.display = total > 0 ? "flex" : "none";
+  const fbadge = document.getElementById("floatingCartBadge");
+  if (fbadge) fbadge.textContent = total;
+  updateFloatingCart(total);
 }
 
-function pulseHeaderCart() {
-  const cart = document.getElementById("headerCart");
-  if (!cart) return;
-  cart.classList.remove("bump");
-  void cart.offsetWidth;
-  cart.classList.add("bump");
+// Floating cart is shown only when there are items AND the header bar
+// (with its own cart) is not yet visible — i.e. at the top of the page.
+function updateFloatingCart(total) {
+  const fc = document.getElementById("floatingCart");
+  if (!fc) return;
+  if (total === undefined) total = getCart().reduce((s, i) => s + i.qty, 0);
+  const header = document.querySelector(".site-header");
+  const scrolled = header && header.classList.contains("scrolled");
+  fc.style.display = (total > 0 && !scrolled) ? "flex" : "none";
+}
+
+function pulseCart() {
+  ["headerCart", "floatingCart"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove("bump");
+    void el.offsetWidth;
+    el.classList.add("bump");
+  });
 }
 
 function escName(name) {
@@ -94,7 +107,7 @@ function addToCart(name, price) {
   }
   setCart(cart);
   updateCartBadge();
-  pulseHeaderCart();
+  pulseCart();
 
   const control = document.querySelector(`.btn-add[data-name="${CSS.escape(name)}"], .item-qty-control[data-name="${CSS.escape(name)}"]`);
   if (control) control.outerHTML = addControlHTML(name, price, cartQty(name));
@@ -111,7 +124,7 @@ function changeQtyInMenu(name, price, delta) {
   if (existing.qty <= 0) cart.splice(cart.indexOf(existing), 1);
   setCart(cart);
   updateCartBadge();
-  if (delta > 0) pulseHeaderCart();
+  if (delta > 0) pulseCart();
 
   const control = document.querySelector(`.item-qty-control[data-name="${CSS.escape(name)}"], .btn-add[data-name="${CSS.escape(name)}"]`);
   if (control) control.outerHTML = addControlHTML(name, price, cartQty(name));
@@ -368,6 +381,7 @@ function syncHeader() {
   }
 
   document.documentElement.style.setProperty("--header-h", header.offsetHeight + "px");
+  updateFloatingCart();
 }
 
 async function init() {
