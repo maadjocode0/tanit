@@ -986,3 +986,6 @@ html { scroll-behavior: smooth; }
 .header-bar .header-search.open .search-inner { width: 100%; }
 .header-bar.searching .header-nav { display: none; }
 .header-bar.searching .brand-text { display: none; }
+
+/* Search only appears in the compact bar (hidden at the top / hero state) */
+.site-header > .header-search { display: none; }
