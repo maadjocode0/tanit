@@ -2,6 +2,8 @@
 
 .range-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
+#reportRoot .stats-bar { margin-bottom: 1rem; }
+
 .report-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
