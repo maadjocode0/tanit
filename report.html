@@ -24,8 +24,17 @@
         <span>Rapport des ventes</span>
       </div>
       <div class="pos-right">
-        <a class="pos-link" href="pos.html"><i class="fa-solid fa-table-columns"></i> POS</a>
-        <a class="pos-link" href="admin.html"><i class="fa-solid fa-sliders"></i> Menu</a>
+        <div class="nav-dropdown">
+          <button class="nav-dropdown-toggle" id="navToggle" aria-haspopup="true" aria-expanded="false">
+            <i class="fa-solid fa-chart-line"></i> Rapport <i class="fa-solid fa-chevron-down nav-caret"></i>
+          </button>
+          <div class="nav-dropdown-menu">
+            <a href="pos.html"><i class="fa-solid fa-table-columns"></i> POS</a>
+            <a href="report.html" class="active"><i class="fa-solid fa-chart-line"></i> Rapport</a>
+            <a href="admin.html"><i class="fa-solid fa-sliders"></i> Menu</a>
+            <a href="qr.html"><i class="fa-solid fa-qrcode"></i> QR</a>
+          </div>
+        </div>
         <button class="pos-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
       </div>
     </div>
@@ -45,6 +54,7 @@
 
   <script src="menu-data.js"></script>
   <script src="supabase.js"></script>
+  <script src="nav.js"></script>
   <script src="report-script.js"></script>
 </body>
 </html>

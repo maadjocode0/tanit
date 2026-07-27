@@ -6,11 +6,14 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <title>Tanit | QR codes des tables</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="pos.css" />
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@gh-pages/qrcode.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: "Inter", sans-serif; background: #f5f2eb; color: #1a1a0e; padding: 1.5rem; }
     .wrap { max-width: 900px; margin: 0 auto; }
+    .wrap .pos-topbar { margin-bottom: 1.5rem; }
     h1 { font-family: "Cormorant Garamond", serif; color: #1a3a2a; font-size: 2rem; margin-bottom: 0.25rem; }
     .sub { color: #6b6347; font-size: 0.9rem; margin-bottom: 1.5rem; }
 
@@ -55,6 +58,27 @@
 </head>
 <body>
   <div class="wrap">
+    <div class="pos-topbar no-print">
+      <div class="pos-brand">
+        <strong>Tanit Lounge</strong>
+        <span>QR codes des tables</span>
+      </div>
+      <div class="pos-right">
+        <div class="nav-dropdown">
+          <button class="nav-dropdown-toggle" id="navToggle" aria-haspopup="true" aria-expanded="false">
+            <i class="fa-solid fa-qrcode"></i> QR <i class="fa-solid fa-chevron-down nav-caret"></i>
+          </button>
+          <div class="nav-dropdown-menu">
+            <a href="pos.html"><i class="fa-solid fa-table-columns"></i> POS</a>
+            <a href="report.html"><i class="fa-solid fa-chart-line"></i> Rapport</a>
+            <a href="admin.html"><i class="fa-solid fa-sliders"></i> Menu</a>
+            <a href="qr.html" class="active"><i class="fa-solid fa-qrcode"></i> QR</a>
+          </div>
+        </div>
+        <button class="pos-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
+      </div>
+    </div>
+
     <h1>QR codes des tables</h1>
     <p class="sub">30 QR codes (tables 1 à 30). En scannant, le client ouvre le menu avec sa table déjà sélectionnée.</p>
 
@@ -70,6 +94,8 @@
     <div id="grid" class="grid"></div>
   </div>
 
+  <script src="supabase.js"></script>
+  <script src="nav.js"></script>
   <script>
     function defaultBase() {
       return new URL("index.html", window.location.href).href;
