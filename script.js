@@ -2,20 +2,91 @@
 let MENU_OVERRIDES = {};
 let CATEGORY_IMAGES = {};
 
-async function loadOverrides() {
-  try {
-    const rows = await getMenuItems();
-    MENU_OVERRIDES = {};
-    rows.forEach(r => { MENU_OVERRIDES[r.name] = r; });
-  } catch (e) {
-    MENU_OVERRIDES = {};
+const MENU_CACHE_KEY = "tanit-menu-v1";
+const MENU_TIMEOUT_MS = 30000;
+
+function menuFromRows(rows) {
+  const overrides = {};
+  const blocks = rows
+    .filter((c) => c && Array.isArray(c.items) && c.items.length > 0)
+    .map((c) => {
+      const lines = c.items.map((it) => {
+        const name = String(it.name_fr || "").trim();
+        const base = baseName(name);
+        const label = base !== name ? name.slice(base.length).trim().replace(/^\(|\)$/g, "") : "";
+        const line = { name, base, label, price: Number(it.price), desc: it.description_fr || "" };
+        overrides[name] = { name, available: it.available !== false, price_override: null };
+        return line;
+      });
+
+      const items = [];
+      for (let i = 0; i < lines.length; ) {
+        const first = lines[i];
+        let j = i + 1;
+        if (first.label) {
+          while (j < lines.length && lines[j].label && lines[j].base === first.base) j++;
+        }
+        if (first.label && j - i >= 2) {
+          items.push({
+            name: first.base,
+            desc: first.desc,
+            variants: lines.slice(i, j).map((l) => ({ label: l.label, price: l.price }))
+          });
+        } else {
+          items.push({ name: first.name, price: first.price, desc: first.desc });
+          j = i + 1;
+        }
+        i = j;
+      }
+
+      return { category: String(c.name_fr || "").trim(), image: c.image_url || "", items };
+    });
+  return { blocks, overrides };
+}
+
+function applyMenuRows(rows) {
+  const { blocks, overrides } = menuFromRows(rows);
+  if (!blocks.length || !blocks.some((b) => b.items.length > 0)) {
+    throw new Error("La base n'a renvoyé aucune carte");
   }
+  MENU_DATA.splice(0, MENU_DATA.length, ...blocks);
+  MENU_OVERRIDES = overrides;
+}
+
+function loadCachedMenu() {
   try {
-    const imgs = await getCategoryImages();
-    CATEGORY_IMAGES = {};
-    imgs.forEach(r => { if (r.image_url) CATEGORY_IMAGES[r.category] = r.image_url; });
+    const rows = JSON.parse(localStorage.getItem(MENU_CACHE_KEY) || "null");
+    if (Array.isArray(rows)) applyMenuRows(rows);
   } catch (e) {
-    CATEGORY_IMAGES = {};
+    localStorage.removeItem(MENU_CACHE_KEY);
+  }
+}
+
+async function fetchMenuRows() {
+  const columns = "id,name_fr,name_en,image_url,position," +
+    "items(id,name_fr,name_en,description_fr,description_en,price,image_url,available,position)";
+  const url = SUPABASE_URL + "/rest/v1/categories?select=" + encodeURIComponent(columns) +
+    "&order=position.asc&items.order=position.asc";
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), MENU_TIMEOUT_MS);
+  try {
+    const res = await fetch(url, { headers: { apikey: SUPABASE_KEY }, signal: controller.signal, cache: "no-store" });
+    if (!res.ok) throw new Error("Supabase answered " + res.status);
+    const rows = await res.json();
+    if (!Array.isArray(rows)) throw new Error("Supabase sent no menu");
+    return rows;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function loadMenu() {
+  try {
+    const rows = await fetchMenuRows();
+    applyMenuRows(rows);
+    localStorage.setItem(MENU_CACHE_KEY, JSON.stringify(rows));
+  } catch (e) {
+    console.warn("Menu indisponible depuis la base, copie locale utilisée :", e);
   }
 }
 
@@ -387,11 +458,13 @@ function syncHeader() {
 async function init() {
   captureTableFromURL();
   syncHeader();
+  loadCachedMenu();
   renderNavbar();
   renderMenu();
   updateCartBadge();
   updateTrackButton();
-  await loadOverrides();
+  await loadMenu();
+  renderNavbar();
   renderMenu();
   setupScrollSpy();
   setupSearch();
