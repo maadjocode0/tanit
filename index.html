@@ -2,120 +2,224 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Tanit | Lounge</title>
   <meta name="theme-color" content="#1a3a2a" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="apple-touch-icon" href="icon.svg" />
-  <title>Tanit Lounge | Megrine</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,600&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.svg" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon.svg" />
 </head>
 <body>
-
   <header class="site-header" id="siteHeader">
-    <div class="header-hero">
-      <p class="hh-eyebrow">Megrine</p>
-      <h1 class="hh-title">Tanit Lounge</h1>
-      <p class="hh-tagline">Reserved by Tanit</p>
-    </div>
-    <div class="header-bar">
-      <a class="brand" href="index.html">
-        <span class="brand-text">
-          <span class="brand-name">Tanit Lounge</span>
-          <span class="brand-sub">Megrine</span>
-        </span>
+    <div class="header-start">
+      <button class="header-menu" type="button" id="sideMenuOpen" aria-haspopup="dialog" aria-controls="sideMenu"
+              data-i18n-attr="aria-label:side.open" aria-label="Ouvrir le menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <a class="brand" href="#top" data-i18n-attr="aria-label:brand.home" aria-label="Tanit, retour en haut de la page">
+        <img src="logo-tanit.jpg" alt="" width="34" height="34" />
+        <span class="brand-name">Tanit</span>
       </a>
-      <nav class="header-nav">
-        <a href="#menu">Menu</a>
-        <a href="#contact">Nous trouver</a>
-      </nav>
-      <button class="header-cart" id="headerCart" onclick="window.location.href='cart.html'" aria-label="Voir le panier">
-        <i class="fa-solid fa-basket-shopping"></i>
-        <span class="cart-count" id="cartBadge">0</span>
-      </button>
     </div>
-    <div class="header-search" id="headerSearch">
-      <button class="search-toggle" id="searchToggle" aria-label="Rechercher">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <span class="search-label">Rechercher</span>
+    <div class="header-actions">
+      <button class="header-search" type="button" id="searchOpen" aria-haspopup="dialog" aria-controls="searchDialog"
+              data-i18n-attr="aria-label:search.open" aria-label="Rechercher dans la carte">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M15.5 15.5L20 20"/></svg>
       </button>
-      <div class="search-inner">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="searchInput" placeholder="Rechercher un article..." />
-        <button class="search-close" id="searchClose" aria-label="Fermer la recherche"><i class="fa-solid fa-xmark"></i></button>
+      <div class="lang-switch" role="group" data-i18n-attr="aria-label:lang.group" aria-label="Langue">
+        <button type="button" data-lang="fr" lang="fr" aria-pressed="true" title="Français">FR</button>
+        <button type="button" data-lang="en" lang="en" aria-pressed="false" title="English">EN</button>
       </div>
     </div>
   </header>
 
-  <nav class="category-nav">
+  <section class="hero" id="top" aria-labelledby="heroTitle">
+    <img class="hero-logo" src="logo-tanit.jpg" alt="" width="120" height="120" />
+    <h1 class="hero-title" id="heroTitle"><span class="hero-name">Tanit</span> <span class="hero-sub">Lounge</span></h1>
+  </section>
+
+  <nav class="category-nav" data-i18n-attr="aria-label:menu.categories" aria-label="Catégories de la carte">
     <div id="categoryNav" class="nav-pills"></div>
   </nav>
 
-  <a class="floating-track" id="floatingTrack" href="track.html" style="display:none">
-    <i class="fa-solid fa-location-arrow"></i>
-    <span>Suivre ma commande</span>
-  </a>
-
-  <a class="floating-cart" id="floatingCart" href="cart.html" style="display:none" aria-label="Voir le panier">
-    <i class="fa-solid fa-basket-shopping"></i>
-    <span id="floatingCartBadge">0</span>
-  </a>
-
   <main class="container">
     <section class="section" id="menu">
+      <p class="menu-stale" id="menuStale" role="status" hidden data-i18n="menu.stale">La carte n'a pas pu être mise à jour : certains prix ont peut-être changé.</p>
       <div id="menuContainer"></div>
+      <noscript><p class="menu-loading">Activez JavaScript pour afficher la carte. / Please turn on JavaScript to see the menu.</p></noscript>
     </section>
   </main>
 
-  <footer class="site-footer" id="contact">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="footer-logo-frame">
-          <img src="logo-tanit.jpg" alt="Tanit Lounge — Megrine" class="footer-logo" />
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+
+      <div class="site-footer-brand">
+        <img src="logo-tanit.jpg" alt="Tanit Lounge" class="site-footer-logo" />
+        <h3 class="site-footer-name">Tanit</h3>
+        <p class="site-footer-tagline">Lounge</p>
+        <p class="site-footer-desc" data-i18n="footer.desc">Reserved by Tanit</p>
+      </div>
+
+      <div class="site-footer-grid">
+        <div class="site-footer-col">
+          <h4 data-i18n="footer.nav">Navigation</h4>
+          <ul>
+            <li><a href="#top" data-i18n="footer.home">Accueil</a></li>
+            <li><a href="#menu" data-i18n="footer.menu">Menu</a></li>
+          </ul>
         </div>
-        <p class="footer-tagline">Reserved by Tanit</p>
-        <div class="footer-socials">
-          <a href="https://www.facebook.com/profile.php?id=100057483458328&locale=fr_FR" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-          <a href="https://www.instagram.com/tanitmegrine/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-          <a href="https://www.tiktok.com/@tanit.lounge.megrine" target="_blank" rel="noopener" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
-          <a href="tel:+21698368065" aria-label="Appeler"><i class="fa-solid fa-phone"></i></a>
-          <a href="https://www.google.com/maps/place/Tanit+Lounge+Megrine" target="_blank" rel="noopener" aria-label="Localisation"><i class="fa-solid fa-location-dot"></i></a>
+
+        <div class="site-footer-col">
+          <h4 data-i18n="footer.contact">Contact</h4>
+          <ul>
+            <li>
+              <a href="tel:+21698368065" id="footerPhone">
+                <i class="fa-solid fa-phone"></i> +216 98 368 065
+              </a>
+            </li>
+            <li>
+              <a href="https://maps.google.com/?cid=12753523637681861375" target="_blank" rel="noopener" id="footerAddress" data-maps>
+                <i class="fa-solid fa-location-dot"></i> Megrine, Tunisie
+              </a>
+            </li>
+            <li>
+              <span id="footerHours"><i class="fa-regular fa-clock"></i> Lun-Dim, 08:00 - 12:00</span>
+            </li>
+            <li>
+              <a href="https://maps.google.com/?cid=12753523637681861375" target="_blank" rel="noopener">
+                <i class="fa-solid fa-star"></i> <span data-i18n="footer.review">Laisser un avis</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="site-footer-col">
+          <h4 data-i18n="footer.follow">Suivez-nous</h4>
+          <div class="site-footer-socials">
+            <a href="https://www.instagram.com/tanitmegrine/" target="_blank" rel="noopener" aria-label="Instagram" id="instagramLink">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=100057483458328&amp;locale=fr_FR" target="_blank" rel="noopener" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f"></i>
+            </a>
+            <a href="https://www.tiktok.com/@tanit.lounge.megrine" target="_blank" rel="noopener" aria-label="TikTok">
+              <i class="fa-brands fa-tiktok"></i>
+            </a>
+            <a href="https://maps.google.com/?cid=12753523637681861375" target="_blank" rel="noopener" aria-label="Google Maps" data-maps>
+              <i class="fa-solid fa-map-location-dot"></i>
+            </a>
+          </div>
         </div>
       </div>
 
-      <div class="footer-cols">
-        <div class="footer-col">
-          <h4>Horaires</h4>
-          <p>Lundi – Dimanche</p>
-          <p>08:00 – 12:00</p>
-        </div>
-        <div class="footer-col">
-          <h4>Contact</h4>
-          <p><a href="tel:+21698368065"><i class="fa-solid fa-phone"></i> +216 98 368 065</a></p>
-          <p><a href="https://maps.google.com/?cid=12753523637681861375" target="_blank" rel="noopener"><i class="fa-solid fa-location-dot"></i> Megrine, Tunisie</a></p>
-          <p><a href="https://maps.google.com/?cid=12753523637681861375" target="_blank" rel="noopener"><i class="fa-solid fa-star"></i> Laisser un avis</a></p>
-        </div>
-        <div class="footer-col">
-          <h4>Menu</h4>
-          <p><a href="index.html"><i class="fa-solid fa-utensils"></i> Voir la carte</a></p>
-          <p><a href="cart.html"><i class="fa-solid fa-basket-shopping"></i> Mon panier</a></p>
-        </div>
-      </div>
-    </div>
+      <div class="site-footer-divider"></div>
 
-    <div class="footer-bottom">
-      <span>© <span id="footerYear">2026</span> Tanit Lounge — Tous droits réservés. · <span class="footer-credit">Réalisé par Youssef Maazaoui</span></span>
-      <span class="footer-made">Megrine, Tunisie</span>
+      <div class="site-footer-bottom">
+        <p>&copy; 2026 Tanit Lounge. <span data-i18n="footer.rights">Tous droits réservés. Réalisé par Youssef Maazaoui</span></p>
+        <a href="#top" class="site-footer-top"><span data-i18n="footer.top">Retour en haut</span> <i class="fa-solid fa-arrow-up"></i></a>
+      </div>
+
     </div>
   </footer>
 
+  <button class="sel-pill" id="selectionOpen" type="button" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.1C.9 8.6 2.9 5 6.4 5c2 0 3.6 1.1 4.6 2.6.3.4.7.4 1 0C13 6.1 14.6 5 16.6 5c3.5 0 5.5 3.6 4 6.9C19.5 16.4 12 21 12 21z"/></svg>
+    <span data-i18n="sel.open">Ma sélection</span>
+    <span class="sel-pill-count" id="selectionCount">0</span>
+    <span class="sel-pill-total" id="selectionTotal">0 DT</span>
+  </button>
+
+  <dialog class="sel-sheet" id="selectionDialog" aria-labelledby="selectionTitle">
+    <div class="sel-inner">
+      <div class="sel-head">
+        <h2 id="selectionTitle" data-i18n="sel.title">Ma sélection</h2>
+        <button class="icon-btn" type="button" id="selectionClose" data-i18n-attr="aria-label:sel.close" aria-label="Fermer">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <p class="sel-hint" data-i18n="sel.hint">Montrez cette liste à votre serveur pour commander. Elle reste enregistrée sur votre téléphone.</p>
+      <ul class="sel-list" id="selectionList"></ul>
+      <p class="sel-empty" id="selectionEmpty" data-i18n="sel.empty">Votre sélection est vide. Touchez + sur la carte pour ajouter un produit.</p>
+      <div class="sel-foot">
+        <button class="text-btn" type="button" id="selectionClear" data-i18n="sel.clear">Vider la sélection</button>
+        <p class="sel-total"><span data-i18n="sel.total">Total</span> <strong id="selectionSum">0 DT</strong></p>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <dialog class="search-sheet" id="searchDialog" aria-labelledby="searchTitle">
+    <div class="search-inner">
+      <h2 class="visually-hidden" id="searchTitle" data-i18n="search.title">Rechercher dans la carte</h2>
+      <div class="search-bar">
+        <label class="search-field">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M15.5 15.5L20 20"/></svg>
+          <span class="visually-hidden" data-i18n="search.label">Rechercher un produit</span>
+          <input type="search" id="searchInput" autocomplete="off" spellcheck="false" enterkeyhint="search"
+                 data-i18n-attr="placeholder:search.placeholder" placeholder="Ex. cappuccino, crêpe, mojito…" />
+        </label>
+        <button class="icon-btn" type="button" id="searchClose" data-i18n-attr="aria-label:search.close" aria-label="Fermer la recherche">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <p class="search-status" id="searchStatus" role="status" aria-live="polite"></p>
+      <ul class="search-results" id="searchResults"></ul>
+    </div>
+  </dialog>
+
+  <dialog class="side-menu" id="sideMenu" aria-labelledby="sideMenuTitle">
+    <div class="side-inner">
+      <div class="side-head">
+        <h2 id="sideMenuTitle" data-i18n="side.title">Menu</h2>
+        <button class="icon-btn" type="button" id="sideMenuClose" data-i18n-attr="aria-label:side.close" aria-label="Fermer le menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+
+      <section class="side-card" id="sideHours" aria-labelledby="hoursTitle" hidden>
+        <h3 id="hoursTitle">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M12 7.5V12l3 2"/></svg>
+          <span data-i18n="hours.title">Horaires</span>
+        </h3>
+        <dl class="side-rows" id="hoursRows"></dl>
+      </section>
+
+      <section class="side-card" id="sideWifi" aria-labelledby="wifiTitle" hidden>
+        <h3 id="wifiTitle">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M3.5 9.5a12 12 0 0 1 17 0M6.5 12.5a8 8 0 0 1 11 0M9.5 15.5a4 4 0 0 1 5 0"/><circle cx="12" cy="18.5" r="1.2" fill="currentColor"/></svg>
+          <span data-i18n="wifi.title">Wi-Fi</span>
+        </h3>
+        <dl class="side-rows">
+          <div><dt data-i18n="wifi.network">Réseau</dt><dd id="wifiName"></dd></div>
+          <div id="wifiPasswordRow"><dt data-i18n="wifi.password">Mot de passe</dt><dd class="wifi-password" id="wifiPassword"></dd></div>
+        </dl>
+        <button class="side-btn" type="button" id="wifiCopy" data-i18n="wifi.copy">Copier le mot de passe</button>
+        <p class="side-note wifi-status" id="wifiStatus" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="side-card" id="sideFind" aria-labelledby="findTitle">
+        <h3 id="findTitle">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+          <span data-i18n="find.title">Nous trouver</span>
+        </h3>
+        <dl class="side-rows">
+          <div id="findAddressRow" hidden><dt data-i18n="find.address">Adresse</dt><dd><a id="findAddress" target="_blank" rel="noopener" data-maps></a></dd></div>
+          <div id="findPhoneRow" hidden><dt data-i18n="find.phone">Téléphone</dt><dd><a id="findPhone"></a></dd></div>
+          <div><dt>Instagram</dt><dd><a id="findInstagram" href="https://www.instagram.com/tanitmegrine/" target="_blank" rel="noopener"></a></dd></div>
+        </dl>
+      </section>
+    </div>
+  </dialog>
+
   <script src="menu-data.js"></script>
-  <script src="supabase.js"></script>
+  <script src="translations.js"></script>
+  <script src="supabase-config.js"></script>
   <script src="script.js"></script>
-  <script>document.getElementById("footerYear").textContent = new Date().getFullYear();</script>
 </body>
 </html>

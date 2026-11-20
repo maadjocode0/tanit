@@ -33,37 +33,6 @@ async function getOrders() {
   return supabaseRequest("GET", "/orders?select=*&order=created_at.desc");
 }
 
-async function getOrderById(id) {
-  const rows = await supabaseRequest("POST", "/rpc/get_order", { p_id: id });
-  return rows[0] || null;
-}
-
-async function createOrder(tableNumber, items, total, notes, tableVerified) {
-  const id = crypto.randomUUID();
-  const base = { id, table_number: tableNumber, items, total, status: "pending" };
-  const withNotes = (notes && notes.trim()) ? { ...base, notes: notes.trim() } : { ...base };
-  const full = { ...withNotes, table_verified: !!tableVerified };
-  let lastError;
-  for (const body of [full, withNotes, base]) {
-    try {
-      await supabaseRequest("POST", "/orders", body, { "Prefer": "return=minimal" });
-      return { id };
-    } catch (e) {
-      if (e.status === 409) return { id };
-      lastError = e;
-    }
-  }
-  throw lastError;
-}
-
-async function updateOrderStatus(id, status) {
-  return supabaseRequest("PATCH", `/orders?id=eq.${id}`, { status });
-}
-
-async function submitFeedback(orderId, rating) {
-  return supabaseRequest("POST", "/feedback", { order_id: orderId || null, rating }, { "Prefer": "return=minimal" });
-}
-
 async function getFeedback() {
   return supabaseRequest("GET", "/feedback?select=*&order=created_at.desc");
 }

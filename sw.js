@@ -1,9 +1,9 @@
 
-const CACHE = "tanit-v14";
+const CACHE = "tanit-v17";
 const ASSETS = [
-  "index.html", "cart.html", "track.html",
-  "menu-data.js", "script.js", "supabase.js", "cart-script.js", "track-script.js",
-  "styles.css", "cart.css", "track.css",
+  "index.html",
+  "menu-data.js", "translations.js", "supabase-config.js", "script.js", "supabase.js",
+  "styles.css",
   "manifest.json", "icon.svg", "favicon.svg"
 ];
 
