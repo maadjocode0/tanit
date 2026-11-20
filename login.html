@@ -53,11 +53,21 @@
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error_description);
+        if (!(await validateToken(data.access_token))) {
+          showError("Ce compte n'a pas accès à l'espace staff.");
+          return;
+        }
         sessionStorage.setItem("tanit_token", data.access_token);
         window.location.href = "pos.html";
       } catch (err) {
-        document.getElementById("errorMsg").style.display = "block";
+        showError("Email ou mot de passe incorrect.");
       }
+    }
+
+    function showError(message) {
+      const el = document.getElementById("errorMsg");
+      el.textContent = message;
+      el.style.display = "block";
     }
   </script>
 </body>

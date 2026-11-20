@@ -1,22 +1,19 @@
 
-let MENU_OVERRIDES = {};
 let CATEGORY_IMAGES = {};
 
 const MENU_CACHE_KEY = "tanit-menu-v1";
 const MENU_TIMEOUT_MS = 30000;
 
 function menuFromRows(rows) {
-  const overrides = {};
   const blocks = rows
     .filter((c) => c && Array.isArray(c.items) && c.items.length > 0)
     .map((c) => {
+      const category = String(c.name_fr || "").trim();
       const lines = c.items.map((it) => {
         const name = String(it.name_fr || "").trim();
         const base = baseName(name);
         const label = base !== name ? name.slice(base.length).trim().replace(/^\(|\)$/g, "") : "";
-        const line = { name, base, label, price: Number(it.price), desc: it.description_fr || "" };
-        overrides[name] = { name, available: it.available !== false, price_override: null };
-        return line;
+        return { name, base, label, price: Number(it.price), desc: it.description_fr || "", available: it.available !== false };
       });
 
       const items = [];
@@ -30,27 +27,34 @@ function menuFromRows(rows) {
           items.push({
             name: first.base,
             desc: first.desc,
-            variants: lines.slice(i, j).map((l) => ({ label: l.label, price: l.price }))
+            variants: lines.slice(i, j).map((l) => ({ label: l.label, price: l.price, available: l.available, cartName: l.name }))
           });
         } else {
-          items.push({ name: first.name, price: first.price, desc: first.desc });
+          items.push({ name: first.name, price: first.price, desc: first.desc, available: first.available, cartName: first.name });
           j = i + 1;
         }
         i = j;
       }
 
-      return { category: String(c.name_fr || "").trim(), image: c.image_url || "", items };
+      return { category, image: c.image_url || "", items };
     });
-  return { blocks, overrides };
+
+  const seen = {};
+  const eachLine = (fn) => blocks.forEach((b) => b.items.forEach((it) =>
+    (it.variants || [it]).forEach((line) => fn(line, b.category))));
+  eachLine((line) => { seen[line.cartName] = (seen[line.cartName] || 0) + 1; });
+  eachLine((line, category) => {
+    if (seen[line.cartName] > 1) line.cartName = `${line.cartName} (${category})`;
+  });
+  return blocks;
 }
 
 function applyMenuRows(rows) {
-  const { blocks, overrides } = menuFromRows(rows);
+  const blocks = menuFromRows(rows);
   if (!blocks.length || !blocks.some((b) => b.items.length > 0)) {
     throw new Error("La base n'a renvoyé aucune carte");
   }
   MENU_DATA.splice(0, MENU_DATA.length, ...blocks);
-  MENU_OVERRIDES = overrides;
 }
 
 function loadCachedMenu() {
@@ -88,20 +92,6 @@ async function loadMenu() {
   } catch (e) {
     console.warn("Menu indisponible depuis la base, copie locale utilisée :", e);
   }
-}
-
-function override(name) {
-  return MENU_OVERRIDES[name] || null;
-}
-
-function effectivePrice(name, coded) {
-  const o = override(name);
-  return (o && o.price_override != null) ? Number(o.price_override) : coded;
-}
-
-function isSoldOut(name) {
-  const o = override(name);
-  return !!(o && o.available === false);
 }
 
 
@@ -231,9 +221,8 @@ function renderNavbar() {
   }).join("");
 }
 
-function lineHTML(displayLabel, lineName, codedPrice) {
-  const price = effectivePrice(lineName, codedPrice);
-  const soldOut = isSoldOut(lineName);
+function lineHTML(displayLabel, lineName, price, available) {
+  const soldOut = available === false;
   const labelHTML = displayLabel ? `<span class="variant-label">${displayLabel}</span>` : "";
   if (soldOut) {
     return `
@@ -254,10 +243,10 @@ function lineHTML(displayLabel, lineName, codedPrice) {
 function itemRightHTML(item) {
   if (item.variants && item.variants.length) {
     return `<div class="item-right item-right-variants">
-      ${item.variants.map(v => lineHTML(v.label, `${item.name} (${v.label})`, v.price)).join("")}
+      ${item.variants.map(v => lineHTML(v.label, v.cartName || `${item.name} (${v.label})`, v.price, v.available)).join("")}
     </div>`;
   }
-  return `<div class="item-right">${lineHTML("", item.name, item.price)}</div>`;
+  return `<div class="item-right">${lineHTML("", item.cartName || item.name, item.price, item.available)}</div>`;
 }
 
 function renderMenu() {

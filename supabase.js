@@ -34,75 +34,30 @@ async function getOrders() {
 }
 
 async function getOrderById(id) {
-  const rows = await supabaseRequest("GET", `/orders?id=eq.${id}&select=*`);
+  const rows = await supabaseRequest("POST", "/rpc/get_order", { p_id: id });
   return rows[0] || null;
 }
 
 async function createOrder(tableNumber, items, total, notes, tableVerified) {
-  const base = { table_number: tableNumber, items, total, status: "pending" };
+  const id = crypto.randomUUID();
+  const base = { id, table_number: tableNumber, items, total, status: "pending" };
   const withNotes = (notes && notes.trim()) ? { ...base, notes: notes.trim() } : { ...base };
   const full = { ...withNotes, table_verified: !!tableVerified };
-  try {
-    return (await supabaseRequest("POST", "/orders", full))[0] || null;
-  } catch (e1) {
+  let lastError;
+  for (const body of [full, withNotes, base]) {
     try {
-      return (await supabaseRequest("POST", "/orders", withNotes))[0] || null;
-    } catch (e2) {
-      return (await supabaseRequest("POST", "/orders", base))[0] || null;
+      await supabaseRequest("POST", "/orders", body, { "Prefer": "return=minimal" });
+      return { id };
+    } catch (e) {
+      if (e.status === 409) return { id };
+      lastError = e;
     }
   }
+  throw lastError;
 }
 
 async function updateOrderStatus(id, status) {
   return supabaseRequest("PATCH", `/orders?id=eq.${id}`, { status });
-}
-
-async function getMenuItems() {
-  return supabaseRequest("GET", "/menu_items?select=*");
-}
-
-async function upsertMenuItem(row) {
-  return supabaseRequest(
-    "POST", "/menu_items",
-    { ...row, updated_at: new Date().toISOString() },
-    { "Prefer": "resolution=merge-duplicates,return=representation" }
-  );
-}
-
-async function getCategoryImages() {
-  return supabaseRequest("GET", "/category_images?select=*");
-}
-
-async function upsertCategoryImage(category, image_url) {
-  return supabaseRequest(
-    "POST", "/category_images",
-    { category, image_url, updated_at: new Date().toISOString() },
-    { "Prefer": "resolution=merge-duplicates,return=representation" }
-  );
-}
-
-function publicPhotoUrl(path) {
-  return `${SUPABASE_URL}/storage/v1/object/public/menu-photos/${path}`;
-}
-
-async function uploadPhoto(fileOrBlob, ext = "jpg") {
-  const path = `cat-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/menu-photos/${path}`, {
-    method: "POST",
-    headers: {
-      "apikey": SUPABASE_KEY,
-      "Authorization": `Bearer ${getAuthToken()}`,
-      "Content-Type": fileOrBlob.type || "image/jpeg",
-      "x-upsert": "true"
-    },
-    body: fileOrBlob
-  });
-  if (!res.ok) {
-    const err = new Error((await res.text()) || res.statusText);
-    err.status = res.status;
-    throw err;
-  }
-  return publicPhotoUrl(path);
 }
 
 async function submitFeedback(orderId, rating) {
@@ -116,10 +71,14 @@ async function getFeedback() {
 async function validateToken(token) {
   if (!token || token === SUPABASE_KEY) return false;
   try {
-    const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-      headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${token}` }
-    });
-    return res.ok;
+    const headers = { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${token}` };
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, { headers });
+    if (!res.ok) return false;
+    const user = await res.json();
+    const admin = await fetch(`${SUPABASE_URL}/rest/v1/admins?select=user_id&user_id=eq.${encodeURIComponent(user.id)}`, { headers });
+    if (!admin.ok) return false;
+    const rows = await admin.json();
+    return Array.isArray(rows) && rows.length > 0;
   } catch {
     return false;
   }

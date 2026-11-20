@@ -257,6 +257,8 @@ function baseName(name) {
 
 
 function itemCategory(name) {
+  const suffix = String(name).match(/\(([^()]*)\)\s*$/);
+  if (suffix && MENU_DATA.some(b => b.category === suffix[1])) return suffix[1];
   const base = baseName(name);
   for (const block of MENU_DATA) {
     if (block.items.some(it => it.name === name || it.name === base)) {
